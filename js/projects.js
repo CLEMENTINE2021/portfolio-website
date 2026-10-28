@@ -21,6 +21,7 @@ const DEFAULT_PROJECTS = [
         title: "01. 轨道预测与引力弹弓变轨机制",
         desc: "根据飞船质量、推进矢量与多体引力场实时动态积分求解预测轨道，并在 HUD 呈现预测轨迹线；利用天体引力弹弓实现零工质加速与大角度战术变轨。",
         src: "assets/videos/overspace-prediction.mp4",
+        bvid: "BV1pPx769E1J",
         duration: "00:24"
       },
       {
@@ -28,6 +29,7 @@ const DEFAULT_PROJECTS = [
         title: "02. 武器后坐力与模块化废弃弹出",
         desc: "射击冲量实时反作用于飞船质心导致姿态偏转与动量反冲；限制单体武器弹药上限，耗尽即自动废弃弹出，促使高速交火中拾取战术补给。",
         src: "assets/videos/overspace-weapon.mp4",
+        bvid: "BV1APx76REBC",
         duration: "00:14"
       },
       {
@@ -35,6 +37,7 @@ const DEFAULT_PROJECTS = [
         title: "03. 基础敌人巡逻警戒与索敌追击",
         desc: "基于微重力失重环境设计的自主巡逻无人机；视锥索敌后动态施加转向力矩与推进矢量，模拟物理惯性追逐与走位缠斗。",
         src: "assets/videos/overspace-enemies.mp4",
+        bvid: "BV1WPx769EGR",
         duration: "00:48"
       },
       {
@@ -42,6 +45,7 @@ const DEFAULT_PROJECTS = [
         title: "04. 精英敌人牵引交互与战术博弈",
         desc: "配备高威胁近战牵引光束的精英无人机；被牵引时需利用反冲力反推或借助环境掩体切断光束，构建高压拉扯对抗。",
         src: "assets/videos/overspace-elite.mp4",
+        bvid: "BV1kPx769E2U",
         duration: "00:29"
       },
       {
@@ -49,6 +53,7 @@ const DEFAULT_PROJECTS = [
         title: "05. 狙击关卡视线遮挡与掩体机动",
         desc: "高精度红外狙击无人机关卡设计；玩家必须结合巨型空间站骨架柱体掩体进行视线遮挡盲区推进，在致命射击间隙切入盲区反打。",
         src: "assets/videos/overspace-sniper.mp4",
+        bvid: "BV1pPx769EUb",
         duration: "00:56"
       },
       {
@@ -56,6 +61,7 @@ const DEFAULT_PROJECTS = [
         title: "06. 猎手敌人暗区潜伏与动态照明",
         desc: "完全隐匿在无光深空暗区的潜伏型猎手敌人；依靠飞船探照灯有限扇形视野与雷达告警指示探照定位，带来高压惊悚与突袭反制体验。",
         src: "assets/videos/overspace-hunter.mp4",
+        bvid: "BV1kPx769E1e",
         duration: "00:31"
       }
     ],

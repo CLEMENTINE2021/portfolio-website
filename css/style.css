@@ -620,6 +620,14 @@ body.is-admin-mode .project-poster-side:hover .poster-edit-overlay.admin-only {
   transition: opacity 0.25s ease;
 }
 
+.showcase-iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  background: #000000;
+  display: block;
+}
+
 /* 拖拽上传覆盖层 */
 .drag-drop-overlay {
   position: absolute;

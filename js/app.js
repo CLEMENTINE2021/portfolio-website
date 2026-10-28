@@ -41,6 +41,7 @@
     videoWrapper: document.getElementById('videoWrapper'),
     videoPlayerBox: document.getElementById('videoPlayerBox'),
     showcaseVideo: document.getElementById('showcaseVideo'),
+    showcaseIframe: document.getElementById('showcaseIframe'),
     dragDropOverlay: document.getElementById('dragDropOverlay'),
     videoSpinner: document.getElementById('videoSpinner'),
     unmuteBanner: document.getElementById('unmuteBanner'),
@@ -219,7 +220,22 @@
     setupKeyboardShortcuts();
   }
 
-  const DATA_VERSION = 'v3_20261028_custom_icons';
+  const DATA_VERSION = 'v4_20261028_bilibili_stream';
+
+  // -------------------------------------------------------------
+  // 工具函数: 提取与检测 Bilibili BV 号
+  // -------------------------------------------------------------
+  function extractBvid(str) {
+    if (!str) return null;
+    const match = str.match(/BV[a-zA-Z0-9]{10}/i);
+    return match ? match[0] : null;
+  }
+
+  function getBvid(clip) {
+    if (!clip) return null;
+    if (clip.bvid) return clip.bvid;
+    return extractBvid(clip.src);
+  }
 
   // -------------------------------------------------------------
   // 数据存取与格式规范化
@@ -643,6 +659,40 @@
 
     // 实时更新视频下方当前片段的介绍信息
     renderClipDetails(clip, state.currentVideoIndex, project.videos.length);
+
+    // 检查是否为 Bilibili 嵌入流 (支持 clip.bvid 或 clip.src 中含有 BV 号)
+    const bvid = getBvid(clip);
+    if (bvid) {
+      if (video) {
+        video.pause();
+        video.style.display = 'none';
+      }
+      if (els.customControls) els.customControls.style.display = 'none';
+      if (els.videoSpinner) els.videoSpinner.classList.remove('active');
+      if (els.unmuteBanner) els.unmuteBanner.classList.add('hidden');
+      if (els.videoEmptyState) els.videoEmptyState.style.display = 'none';
+
+      if (els.showcaseIframe) {
+        els.showcaseIframe.style.display = 'block';
+        const targetSrc = `https://player.bilibili.com/player.html?isOutside=true&bvid=${bvid}&page=1&autoplay=1&danmaku=0&high_quality=1`;
+        if (els.showcaseIframe.src !== targetSrc) {
+          els.showcaseIframe.src = targetSrc;
+        }
+      }
+      return;
+    }
+
+    // 切换回原生 HTML5 Video 播放模式
+    if (els.showcaseIframe) {
+      els.showcaseIframe.style.display = 'none';
+      els.showcaseIframe.src = '';
+    }
+    if (video) {
+      video.style.display = 'block';
+    }
+    if (els.customControls) {
+      els.customControls.style.display = 'flex';
+    }
 
     // 检查片段是否有视频文件/URL，若为空则显示空白引导层
     if (!clip.src) {
@@ -1144,24 +1194,34 @@
         }
         case ' ': {
           e.preventDefault();
-          if (video.paused) video.play();
-          else video.pause();
+          if (video && video.style.display !== 'none') {
+            if (video.paused) video.play();
+            else video.pause();
+          }
           break;
         }
         case 'm':
         case 'M': {
           e.preventDefault();
-          video.muted = !video.muted;
-          state.isMuted = video.muted;
-          if (!video.muted) state.userWantsAudio = true;
-          updateAudioUI();
-          showToast(video.muted ? '已静音' : '已开启声音');
+          if (video && video.style.display !== 'none') {
+            video.muted = !video.muted;
+            state.isMuted = video.muted;
+            if (!video.muted) state.userWantsAudio = true;
+            updateAudioUI();
+            showToast(video.muted ? '已静音' : '已开启声音');
+          }
           break;
         }
         case 'f':
         case 'F': {
           e.preventDefault();
-          els.fullscreenBtn.click();
+          if (els.showcaseIframe && els.showcaseIframe.style.display !== 'none') {
+            if (els.showcaseIframe.requestFullscreen) {
+              els.showcaseIframe.requestFullscreen();
+            }
+          } else if (els.fullscreenBtn) {
+            els.fullscreenBtn.click();
+          }
           break;
         }
         case '?': {
@@ -1444,7 +1504,7 @@
       }
       if (els.clipFormTitle) els.clipFormTitle.value = clip.title || '';
       if (els.clipFormDuration) els.clipFormDuration.value = clip.duration || '00:00';
-      if (els.clipFormSrc) els.clipFormSrc.value = clip.src || '';
+      if (els.clipFormSrc) els.clipFormSrc.value = clip.bvid || clip.src || '';
       if (els.clipFormDesc) els.clipFormDesc.value = clip.desc || '';
 
       els.clipEditModal.classList.add('active');
@@ -1526,6 +1586,13 @@
         clip.duration = els.clipFormDuration.value.trim() || '00:00';
         clip.src = els.clipFormSrc.value.trim();
         clip.desc = els.clipFormDesc.value.trim();
+
+        const detectedBvid = extractBvid(clip.src);
+        if (detectedBvid) {
+          clip.bvid = detectedBvid;
+        } else {
+          delete clip.bvid;
+        }
 
         saveCustomProjects();
         renderSubvideoList();
