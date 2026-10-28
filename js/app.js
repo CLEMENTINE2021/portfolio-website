@@ -220,7 +220,7 @@
     setupKeyboardShortcuts();
   }
 
-  const DATA_VERSION = 'v6_20261028_smart_preload';
+  const DATA_VERSION = 'v7_20261028_synced_user_edits';
 
   // -------------------------------------------------------------
   // 工具函数: 提取与检测 Bilibili BV 号

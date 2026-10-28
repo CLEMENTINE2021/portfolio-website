@@ -1050,6 +1050,8 @@ body.is-admin-mode .project-poster-side:hover .poster-edit-overlay.admin-only {
   color: var(--text-secondary);
   line-height: 1.75;
   letter-spacing: 0.2px;
+  white-space: pre-wrap;
+  word-break: break-word;
 }
 .clip-title {
   font-size: 1.12rem;
@@ -1064,6 +1066,8 @@ body.is-admin-mode .project-poster-side:hover .poster-edit-overlay.admin-only {
   color: var(--text-secondary);
   line-height: 1.7;
   letter-spacing: 0.2px;
+  white-space: pre-wrap;
+  word-break: break-word;
 }
 
 /* 3. 底部无缝平铺操作栏 (Quickshell 底部零缝隙均等分栏) */
