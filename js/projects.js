@@ -27,8 +27,8 @@ const DEFAULT_PROJECTS = [
       {
         "id": "overspace-v1793178412516",
         "title": "真实引力衰减演示",
-        "desc": "若要使用真实引力衰减会出现两种情况\n1.引力几乎弱到没有感觉，不容易形成轨道。\n2.在一定距离外可感知的引力，一旦靠近就容易将飞船吸到地面上起不来。",
-        "src": "blob:http://localhost:8000/a2838ce4-43dd-4d15-b05b-8743fc67b55d",
+        "desc": "若要使用真实引力衰减会出现两种情况\n1.引力几乎弱到没有感觉，不容易形成轨道。\n2.如果将引力提升到可感知的程度，一旦靠近就将飞船吸到地面上起不来。",
+        "src": "assets/videos/realg.mp4",
         "duration": "00:00"
       },
       {
@@ -139,6 +139,90 @@ const DEFAULT_PROJECTS = [
       }
     ],
     "controls": "【WASD】平移相机 | 【Q/E】旋转90° | 【滚轮】升降相机/切屋顶透视 | 【左键】选人/执行动作 | 【Tab】切换队员 | 【R】手动切换屋顶显示"
+  },
+  {
+    "id": "pixel-plane",
+    "title": "像素飞机大战",
+    "subtitle": "竖屏弹幕射击，Boss 与肉鸽武器",
+    "category": "独立游戏 / 竖版射击",
+    "engine": "Godot 4.7",
+    "year": "2026",
+    "status": "可玩原型",
+    "role": "系统策划 / 关卡设计 / GDScript 实现",
+    "thumbnail": "assets/thumbnails/pixel_plane.jpg",
+    "icon": "assets/thumbnails/pixel_plane.jpg",
+    "videos": [
+      {
+        "id": "pixel-plane-title",
+        "title": "01. 标题界面",
+        "desc": "主菜单只放开始按钮和最高分。单手拖动移动，自动射击，进入战斗只需一次点击。",
+        "src": "assets/screenshots/pixel-plane/01_title_screen.png"
+      },
+      {
+        "id": "pixel-plane-grassland",
+        "title": "02. 草原战斗",
+        "desc": "第一关。敌机成组入场，玩家子弹为黄色，敌方为红色，弹道一眼可读。玩家判定点比贴图小，容错更高。",
+        "src": "assets/screenshots/pixel-plane/02_combat_grassland.png"
+      },
+      {
+        "id": "pixel-plane-flamethrower",
+        "title": "03. 喷火器",
+        "desc": "近距离锥形火焰，穿透敌人并持续伤害。射程短，换来穿透和持续输出，靠近敌人既是风险也是收益。",
+        "src": "assets/screenshots/pixel-plane/03_flamethrower_action.png"
+      },
+      {
+        "id": "pixel-plane-fortress",
+        "title": "04. 钢铁要塞",
+        "desc": "第一关 Boss。四个可破坏炮塔加一个核心，炮塔全毁后核心狂暴。血条分段显示，随时能看出进度。图中玩家用激光贯穿炮塔间隙，集火核心。",
+        "src": "assets/screenshots/pixel-plane/04_boss_fortress.png"
+      },
+      {
+        "id": "pixel-plane-reward",
+        "title": "05. 击破奖励",
+        "desc": "击破 Boss 后画面冻结，三选一：换新武器，或升级当前武器（最高 Lv3）。也可以花 30000 分购买僚机。每局的武器组合不同，打法随之改变。",
+        "src": "assets/screenshots/pixel-plane/05_reward_and_wingman.png"
+      },
+      {
+        "id": "pixel-plane-sea",
+        "title": "06. 海域与僚机",
+        "desc": "第二关切换到海域。僚机与主机并排开火，并替玩家抵挡一次伤害。敌方弹幕统一为红橙色圆弹，在深色背景上依然清晰。",
+        "src": "assets/screenshots/pixel-plane/06_twin_fighters_sea.png"
+      },
+      {
+        "id": "pixel-plane-space",
+        "title": "07. 太空与连锁闪电",
+        "desc": "第三关进入太空。连锁闪电在敌人之间跳跃，适合清理密集杂兵。武器每升一级，输出和表现都会增强，Lv3 封顶。",
+        "src": "assets/screenshots/pixel-plane/07_space_lightning_action.png"
+      },
+      {
+        "id": "pixel-plane-gameover",
+        "title": "08. 游戏结束",
+        "desc": "结算页显示本局得分与最高分，提供「再来一局」和「返回主菜单」。重开会重建整个场景，不残留上一局的状态。",
+        "src": "assets/screenshots/pixel-plane/08_game_over_score.png"
+      }
+    ],
+    "links": {},
+    "metaText": "Godot 4.7 · GDScript · 竖屏 · 可玩原型",
+    "overview": "竖屏弹幕射击。围绕“清杂兵 → Boss → 选武器”的循环，设计关卡节奏与武器成长。",
+    "keyPoints": [
+      {
+        "title": "单手操作",
+        "desc": "触屏相对拖动，手指位移等于飞机位移，自动射击。判定点比贴图小，容错高。"
+      },
+      {
+        "title": "关卡循环",
+        "desc": "每关 55 秒杂兵波次，警告后进入 Boss 战，击破后选武器并切换场景：草原、海域、太空，之后星云与深空交替。"
+      },
+      {
+        "title": "肉鸽武器",
+        "desc": "8 种武器：机炮、散射、爆裂弹、冲击波、喷火器、激光、追踪导弹、连锁闪电。换武器或升级当前武器，最高 Lv3。"
+      },
+      {
+        "title": "Boss 与难度",
+        "desc": "钢铁要塞、雷霆轰炸机、虚空母舰轮换，由多个可破坏部件组成，会分阶段狂暴。敌人血量随关卡逐步提高。"
+      }
+    ],
+    "controls": "【拖动屏幕 / 方向键 / WASD】移动 | 【自动】射击 | 【右上角按钮】暂停"
   }
 ];
 
