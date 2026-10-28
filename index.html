@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>葛文轩 (Wenxuan Ge) | 游戏设计作品集</title>
+  <meta name="description" content="葛文轩的个人作品集网站 - 游戏系统策划、关卡设计与物理机制研发。上方横排选择作品，右侧选择视频片段，展示视频与关键设计说明。">
+  <!-- Styles (采用系统原生高品质字体栈，零阻塞秒开) -->
+  <link rel="stylesheet" href="css/style.css?v=20261028_08">
+</head>
+<body class="theme-dark">
+  <!-- 《OVERSPACE》专属深空星空背景 Canvas -->
+  <canvas id="spaceCanvas" class="space-starfield" aria-hidden="true"></canvas>
+
+  <div class="app-layout">
+    <!-- 顶部全局导航栏 -->
+    <header class="app-header">
+      <div class="header-left">
+        <a href="#" class="brand-badge" id="brandLogo">
+          <div class="avatar-glow">
+            <span class="avatar-text">葛</span>
+          </div>
+          <div class="brand-info">
+            <h1 class="brand-name">葛文轩 <span class="brand-en">WENXUAN GE</span></h1>
+            <p class="brand-title">游戏系统策划 · 关卡设计</p>
+          </div>
+        </a>
+      </div>
+
+      <!-- 快捷全局功能 -->
+      <div class="header-right">
+        <div class="social-links">
+          <a href="https://kineticplanet.itch.io" target="_blank" rel="noopener" class="social-text-link">itch.io</a>
+          <a href="mailto:wge66689@gmail.com" class="social-text-link">联系邮箱</a>
+        </div>
+      </div>
+    </header>
+
+    <!-- 上面一排横着的：选择作品 (Top Horizontal Project Bar，已关闭左侧椭圆分类) -->
+    <section class="top-project-strip-section" aria-label="作品选择栏">
+      <div class="strip-inner">
+        <!-- 横排作品卡片选择容器 -->
+        <div class="top-project-scroll" id="topProjectListContainer" role="tablist" aria-orientation="horizontal">
+          <!-- 动态生成的横排作品卡片 -->
+        </div>
+      </div>
+    </section>
+
+    <!-- 下面主展示区：上方为项目介绍与视频片段合体卡片，下方为嵌入式视频与片段解析卡片 -->
+    <main class="bottom-workspace-layout">
+      <!-- 上方：项目介绍与视频片段选择合体卡片 (视频片段置于右侧且无独立标题) -->
+      <article class="project-detail-card" id="projectDetailCard">
+        <!-- 卡片主体：最左侧项目海报，中间项目概述，右侧视频片段列表 -->
+        <div class="card-merged-content">
+          <!-- 最左侧：正方形海报展示区 -->
+          <div class="project-poster-side" id="projectPosterSide">
+            <img id="projectPosterImg" src="" alt="项目封面海报" class="project-poster-img" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+            <div class="project-poster-placeholder" id="projectPosterPlaceholder" style="display:none;">
+              <span class="poster-icon">🎮</span>
+              <span>暂无海报</span>
+            </div>
+            <!-- 管理员快捷更换海报遮罩 -->
+            <label class="poster-edit-overlay admin-only" title="点击更换项目海报图片">
+              <span class="poster-edit-icon">📷</span>
+              <span class="poster-edit-text">更换海报</span>
+              <input type="file" id="quickPosterPicker" accept="image/*" style="display:none;">
+            </label>
+          </div>
+
+          <!-- 垂直分割细线 -->
+          <div class="card-column-divider"></div>
+
+          <!-- 中间：项目介绍正文 -->
+          <div class="card-body-area project-intro-side">
+            <div class="card-title-row">
+              <h2 class="detail-title" id="detailTitle">作品标题加载中...</h2>
+              <button class="card-edit-btn admin-only" id="editProjectBtn" title="编辑当前作品">编辑</button>
+            </div>
+            <p class="detail-subtitle" id="detailSubtitle">作品副标题加载中...</p>
+            <div class="card-body-divider"></div>
+            <p class="info-desc" id="detailOverviewText"></p>
+          </div>
+
+          <!-- 垂直分割细线 -->
+          <div class="card-column-divider"></div>
+
+          <!-- 右侧：视频片段选择列表 (无独立标题，直接呈现各片段项，支持内部滚动) -->
+          <aside class="subvideo-list-side" id="subvideoSidebar" aria-label="视频片段选择">
+            <div class="subvideo-list-scroll" id="subvideoListContainer" role="tablist" aria-orientation="vertical">
+              <!-- 动态生成的该作品不同视频列表项 -->
+            </div>
+          </aside>
+        </div>
+      </article>
+
+      <!-- 下方：包含视频播放与片段解析的一体化卡片 -->
+      <article class="clip-detail-card" id="clipDetailCard">
+        <!-- 视频播放器舞台 (无缝内嵌于卡片内) -->
+        <div class="video-showcase-wrapper" id="videoWrapper">
+          <div class="video-player-box" id="videoPlayerBox">
+            <video 
+              id="showcaseVideo"
+              class="showcase-video"
+              playsinline
+              webkit-playsinline
+              muted
+              loop
+              preload="metadata"
+              poster="assets/thumbnails/overspace.jpg"
+            >
+              您的浏览器不支持 HTML5 Video 视频播放。
+            </video>
+
+            <!-- 拖放自定义视频提示遮罩 -->
+            <div class="drag-drop-overlay" id="dragDropOverlay">
+              <div class="drag-drop-content">
+                <p>释放文件以播放此视频</p>
+                <small>支持 MP4 / WebM 本地文件</small>
+              </div>
+            </div>
+
+            <!-- 视频缓冲加载动画 -->
+            <div class="video-loading-spinner" id="videoSpinner">
+              <div class="spinner-circle"></div>
+              <span class="spinner-text">加载视频中...</span>
+            </div>
+
+            <!-- 自动播放静音提示条 (已全局隐藏) -->
+            <div class="unmute-banner" id="unmuteBanner">
+              <span class="unmute-text">当前为静音播放</span>
+              <button class="unmute-action-btn" id="unmuteActionBtn">开启声音</button>
+            </div>
+
+            <!-- 状态指示动效 -->
+            <div class="play-pause-indicator" id="playPauseIndicator">
+              <span class="indicator-icon">▶</span>
+            </div>
+
+            <!-- 空白视频提示与上传入口 -->
+            <div class="video-empty-state" id="videoEmptyState" style="display:none;">
+              <div class="video-empty-content">
+                <div class="empty-icon">🎬</div>
+                <p class="empty-text">当前片段尚未上传视频</p>
+                <label class="btn btn-primary btn-sm file-select-label" style="cursor:pointer;" title="选择本地视频文件">
+                  <span>上传视频</span>
+                  <input type="file" id="emptyVideoPicker" accept="video/mp4,video/webm" style="display:none;">
+                </label>
+              </div>
+            </div>
+
+            <!-- 自定义视频播放控制器 (纯文字按钮，无图标) -->
+            <div class="custom-video-controls" id="customControls">
+              <!-- 进度条区域 -->
+              <div class="progress-bar-container" id="progressContainer">
+                <div class="progress-buffer-bar" id="bufferBar"></div>
+                <div class="progress-played-bar" id="playedBar"></div>
+                <div class="progress-handle" id="progressHandle"></div>
+                <div class="progress-tooltip" id="progressTooltip">00:00</div>
+              </div>
+
+              <!-- 控制器底部行 -->
+              <div class="controls-bottom-bar">
+                <div class="controls-left">
+                  <button class="ctrl-btn text-ctrl-btn" id="playPauseBtn" title="播放 / 暂停 (空格键)">
+                    <span id="playPauseBtnIcon">暂停</span>
+                  </button>
+                  <button class="ctrl-btn text-ctrl-btn" id="restartBtn" title="重新从头播放">
+                    <span>重播</span>
+                  </button>
+                  <div class="time-display">
+                    <span id="currentTime">00:00</span>
+                    <span class="time-sep">/</span>
+                    <span id="totalDuration">00:00</span>
+                  </div>
+                </div>
+
+                <div class="controls-right">
+                  <!-- 音量控制与滑块 -->
+                  <div class="volume-control-group">
+                    <button class="ctrl-btn text-ctrl-btn" id="muteToggleBtn" title="静音 / 取消静音 (M 键)">
+                      <span id="volumeBtnIcon">静音</span>
+                    </button>
+                    <input type="range" class="volume-slider" id="volumeSlider" min="0" max="1" step="0.05" value="0" title="调整音量">
+                  </div>
+
+                  <!-- 本地视频测试 -->
+                  <label class="ctrl-btn text-ctrl-btn file-select-label" title="选择本地视频快速测试此作品">
+                    <span>本地视频</span>
+                    <input type="file" id="localVideoPicker" accept="video/mp4,video/webm" style="display:none">
+                  </label>
+
+                  <!-- 全屏按钮 -->
+                  <button class="ctrl-btn text-ctrl-btn" id="fullscreenBtn" title="全屏查看视频 (F 键)">
+                    <span id="fullscreenLabel">全屏</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 卡片下方：当前片段的详细解析说明 -->
+        <div class="card-body-area">
+          <div class="card-title-row">
+            <h3 class="clip-title" id="clipTitle">片段标题加载中...</h3>
+            <button class="card-edit-btn admin-only" id="editClipBtn" title="编辑当前片段">编辑</button>
+          </div>
+          <div class="card-body-divider"></div>
+          <p class="clip-desc" id="clipDesc">片段介绍加载中...</p>
+        </div>
+      </article>
+    </main>
+  </div>
+
+  <!-- 模态框 1: 管理作品数据 -->
+  <div class="modal-backdrop" id="projectModal" aria-hidden="true">
+    <div class="modal-dialog modal-large">
+      <div class="modal-header">
+        <h3 class="modal-title" id="projectModalTitle">管理作品数据</h3>
+        <button class="modal-close-btn" id="closeProjectModalBtn">✕</button>
+      </div>
+
+      <!-- 作品快速选择切换栏 -->
+      <div class="modal-project-tabs" id="modalProjectTabs">
+        <!-- 动态生成作品切换标签与新增按钮 -->
+      </div>
+
+      <form class="modal-form" id="projectForm">
+        <!-- 基础信息行 1 -->
+        <div class="form-row">
+          <div class="form-group flex-2">
+            <label for="formTitle">作品名称 *</label>
+            <input type="text" id="formTitle" required placeholder="例如: 《OVERSPACE》">
+          </div>
+          <div class="form-group flex-1">
+            <label for="formCategory">所属类别</label>
+            <input type="text" id="formCategory" placeholder="例如: 独立游戏 / 物理模拟">
+          </div>
+        </div>
+
+        <!-- 基础信息行 2 -->
+        <div class="form-row">
+          <div class="form-group flex-2">
+            <label for="formSubtitle">副标题 / 特色概括</label>
+            <input type="text" id="formSubtitle" placeholder="例如: 2D 太空物理模拟与战术飞行独立游戏">
+          </div>
+          <div class="form-group flex-1">
+            <label for="formEngine">核心引擎 / 语言</label>
+            <input type="text" id="formEngine" placeholder="例如: Godot 4.x / GDScript">
+          </div>
+        </div>
+
+        <!-- 封面海报、图标与操作说明 -->
+        <div class="form-row">
+          <div class="form-group flex-1">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+              <label for="formThumbUrl" style="margin-bottom: 0;">海报 / 封面图路径</label>
+              <img id="formThumbPreview" src="" alt="海报预览" style="width: 26px; height: 26px; object-fit: cover; border-radius: 4px; display: none; border: 1px solid rgba(255,255,255,0.25);">
+            </div>
+            <div class="form-input-with-action">
+              <input type="text" id="formThumbUrl" placeholder="例如: assets/thumbnails/overspace.jpg 或点击右侧上传">
+              <label class="btn btn-secondary btn-sm file-select-label" style="cursor:pointer;" title="选择本地海报图片">
+                <span>上传海报</span>
+                <input type="file" id="formThumbFilePicker" accept="image/*" style="display:none;">
+              </label>
+            </div>
+          </div>
+          <div class="form-group flex-1">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+              <label for="formIconUrl" style="margin-bottom: 0;">自定义图标路径 (图片/SVG)</label>
+              <img id="formIconPreview" src="" alt="图标预览" style="width: 26px; height: 26px; object-fit: cover; border-radius: 4px; display: none; border: 1px solid rgba(255,255,255,0.25);">
+            </div>
+            <div class="form-input-with-action">
+              <input type="text" id="formIconUrl" placeholder="例如: assets/thumbnails/icon.png 或留空">
+              <label class="btn btn-secondary btn-sm file-select-label" style="cursor:pointer;" title="选择本地图标图片">
+                <span>上传图标</span>
+                <input type="file" id="formIconFilePicker" accept="image/*" style="display:none;">
+              </label>
+            </div>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group flex-1">
+            <label for="formControls">操作说明</label>
+            <input type="text" id="formControls" placeholder="例如: 【WASD】推进机动 | 【鼠标】瞄准...">
+          </div>
+        </div>
+
+        <!-- 详细设计概述 -->
+        <div class="form-group">
+          <label for="formOverview">详细介绍与设计概述 *</label>
+          <textarea id="formOverview" rows="3" required placeholder="介绍作品的设计背景、核心机制与体验目标..."></textarea>
+        </div>
+
+        <!-- 视频片段管理区域 (列表展示与实时编辑) -->
+        <div class="form-group">
+          <div class="clips-manager-header">
+            <label>视频片段列表 (<span id="modalClipCount">0</span> 个片段)</label>
+            <button type="button" class="btn btn-xs btn-outline" id="modalAddClipBtn">+ 添加片段</button>
+          </div>
+          <div class="clips-manager-list" id="modalClipsList">
+            <!-- 动态生成各个视频片段项 -->
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <div class="footer-left-actions">
+            <button type="button" class="btn btn-secondary" id="exportDataBtn">导出配置</button>
+            <button type="button" class="btn btn-danger" id="resetDataBtn">恢复默认</button>
+            <button type="button" class="btn btn-danger" id="deleteProjectBtn" style="display:none;">删除作品</button>
+          </div>
+          <div class="footer-right-actions">
+            <button type="button" class="btn btn-secondary" id="cancelFormBtn">取消</button>
+            <button type="submit" class="btn btn-primary" id="saveProjectBtn">保存生效</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 模态框: 编辑当前片段 -->
+  <div class="modal-backdrop" id="clipEditModal" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 class="modal-title" id="clipModalTitle">编辑视频片段</h3>
+        <button class="modal-close-btn" id="closeClipModalBtn">✕</button>
+      </div>
+      <form class="modal-form" id="clipEditForm">
+        <div class="form-row">
+          <div class="form-group flex-2">
+            <label for="clipFormTitle">片段标题 *</label>
+            <input type="text" id="clipFormTitle" required placeholder="例如: 01. 机制演示">
+          </div>
+          <div class="form-group flex-1">
+            <label for="clipFormDuration">时长</label>
+            <input type="text" id="clipFormDuration" placeholder="例如: 00:25">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="clipFormSrc">视频来源 / 文件</label>
+          <div class="form-input-with-action">
+            <input type="text" id="clipFormSrc" placeholder="输入视频文件相对路径、网络 URL 或点击右侧上传">
+            <label class="btn btn-secondary btn-sm file-select-label" style="cursor:pointer;" title="选择本地视频文件">
+              <span>上传视频</span>
+              <input type="file" id="clipModalFilePicker" accept="video/mp4,video/webm" style="display:none;">
+            </label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="clipFormDesc">片段介绍与设计解析 *</label>
+          <textarea id="clipFormDesc" rows="4" placeholder="介绍此片段展示的系统逻辑、关卡要点与设计意图..."></textarea>
+        </div>
+
+        <div class="modal-footer">
+          <div class="footer-left-actions">
+            <button type="button" class="btn btn-danger" id="deleteCurrentClipBtn">删除此片段</button>
+          </div>
+          <div class="footer-right-actions">
+            <button type="button" class="btn btn-secondary" id="cancelClipFormBtn">取消</button>
+            <button type="submit" class="btn btn-primary" id="saveClipBtn">保存修改</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 模态框: 管理员身份验证 -->
+  <div class="modal-backdrop" id="adminAuthModal" aria-hidden="true">
+    <div class="modal-dialog modal-small">
+      <div class="modal-header">
+        <h3 class="modal-title">管理员模式验证</h3>
+        <button class="modal-close-btn" id="closeAdminModalBtn">✕</button>
+      </div>
+      <form class="modal-form" id="adminAuthForm">
+        <div class="form-group">
+          <label for="adminPasswordInput">请输入管理密码</label>
+          <input type="password" id="adminPasswordInput" placeholder="输入密码以解锁编辑权限" autocomplete="current-password" required>
+        </div>
+        <div class="modal-footer justify-end">
+          <button type="button" class="btn btn-secondary" id="cancelAdminBtn">取消</button>
+          <button type="submit" class="btn btn-primary" id="confirmAdminBtn">解锁编辑</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 模态框 2: 键盘快捷键指南 -->
+  <div class="modal-backdrop" id="shortcutsModal" aria-hidden="true">
+    <div class="modal-dialog modal-small">
+      <div class="modal-header">
+        <h3 class="modal-title">键盘快捷键</h3>
+        <button class="modal-close-btn" id="closeShortcutsModalBtn">✕</button>
+      </div>
+      <div class="shortcuts-grid">
+        <div class="shortcut-item">
+          <span class="sc-keys"><kbd>←</kbd> 或 <kbd>→</kbd></span>
+          <span class="sc-desc">在上方横排切换不同作品</span>
+        </div>
+        <div class="shortcut-item">
+          <span class="sc-keys"><kbd>↑</kbd> 或 <kbd>↓</kbd></span>
+          <span class="sc-desc">在右侧切换视频片段</span>
+        </div>
+        <div class="shortcut-item">
+          <span class="sc-keys"><kbd>Space</kbd></span>
+          <span class="sc-desc">播放 / 暂停视频</span>
+        </div>
+        <div class="shortcut-item">
+          <span class="sc-keys"><kbd>M</kbd></span>
+          <span class="sc-desc">开启 / 静音声音</span>
+        </div>
+        <div class="shortcut-item">
+          <span class="sc-keys"><kbd>F</kbd></span>
+          <span class="sc-desc">全屏播放</span>
+        </div>
+        <div class="shortcut-item">
+          <span class="sc-keys"><kbd>?</kbd></span>
+          <span class="sc-desc">打开快捷键面板</span>
+        </div>
+        <div class="shortcut-item">
+          <span class="sc-keys"><kbd>Esc</kbd></span>
+          <span class="sc-desc">退出全屏 / 关闭弹窗</span>
+        </div>
+      </div>
+      <div class="modal-footer justify-end">
+        <button class="btn btn-primary" id="confirmShortcutsBtn">我知道了</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 管理员模式状态指示器 (仅管理员激活时显示，点击可退出) -->
+  <div class="admin-status-indicator admin-only" id="adminStatusIndicator" title="点击退出管理员编辑模式">
+    <span class="indicator-dot">●</span> 管理员编辑模式 (点击退出)
+  </div>
+
+  <!-- 轻量全局 Toast 提示容器 -->
+  <div class="toast-container" id="toastContainer" aria-live="polite"></div>
+
+  <!-- Scripts -->
+  <script src="js/projects.js?v=20261028_08"></script>
+  <script src="js/space-theme.js?v=20261028_08"></script>
+  <script src="js/app.js?v=20261028_08"></script>
+</body>
+</html>
