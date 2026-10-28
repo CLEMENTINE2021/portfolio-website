@@ -1,138 +1,144 @@
 /**
  * 作品集数据配置文件 (projects.js)
  * 葛文轩 (Wenxuan Ge) - 游戏系统策划 / 关卡设计
+ * (本文件由网页端编辑后自动持久化更新)
  */
 
 const DEFAULT_PROJECTS = [
   {
-    id: "overspace",
-    title: "《OVERSPACE》",
-    subtitle: "2D 太空物理模拟与战术飞行独立游戏",
-    category: "独立游戏 / 物理模拟",
-    engine: "Godot 4.x",
-    year: "2025 - 至今",
-    status: "在研商业项目",
-    role: "系统策划 / 关卡设计 / 程序实现",
-    thumbnail: "assets/thumbnails/overspace.jpg",
-    icon: "assets/thumbnails/overspace.jpg",
-    videos: [
+    "id": "overspace",
+    "title": "OVERSPACE",
+    "subtitle": "围绕物理的战斗与解谜",
+    "category": "独立游戏 / 物理模拟",
+    "engine": "Godot 4.x",
+    "year": "2025 - 至今",
+    "status": "在研商业项目",
+    "role": "系统策划 / 关卡设计 / 程序实现",
+    "thumbnail": "assets/thumbnails/overspace.jpg",
+    "icon": "assets/thumbnails/overspace.jpg",
+    "videos": [
       {
-        id: "overspace-v1",
-        title: "01. 引力的线性衰减",
-        desc: "借鉴《星际拓荒》的线性引力设计，减小引力衰减速度，降低操作门槛。",
-        src: "assets/videos/overspace-prediction.mp4",
-        duration: "00:24"
+        "id": "overspace-v1",
+        "title": "01. 引力的线性衰减",
+        "desc": "借鉴《星际拓荒》的线性引力设计，减小引力衰减速度，降低操作门槛。",
+        "src": "assets/videos/overspace-prediction.mp4",
+        "duration": "00:24"
       },
       {
-        id: "overspace-v2",
-        title: "02. 武器的获取和弹药设计",
-        desc: "游戏中掉落的武器通过碰撞拾取，弹药数量极少，用完自动丢弃。在保证玩家对武器新鲜感的同时，增加玩家推进游戏的动力。远程武器的稀缺也让游戏的物理玩法维持核心地位。",
-        src: "assets/videos/overspace-weapon.mp4",
-        duration: "00:14"
+        "id": "overspace-v1793178412516",
+        "title": "真实引力衰减演示",
+        "desc": "若要使用真实引力衰减会出现两种情况\n1.引力几乎弱到没有感觉，不容易形成轨道。\n2.在一定距离外可感知的引力，一旦靠近就容易将飞船吸到地面上起不来。",
+        "src": "blob:http://localhost:8000/a2838ce4-43dd-4d15-b05b-8743fc67b55d",
+        "duration": "00:00"
       },
       {
-        id: "overspace-v3",
-        title: "03. 基础敌人射击",
-        desc: `基础敌人通用一副基础的身体和AI，但使用武器和行为参数有调整。
-其中charger（最基础的冲撞者）首先与玩家拉开距离，在合适的距离下向玩家冲撞。自身生命值较低，碰撞产生的爆炸具有杀伤力。该特性允许玩家将其当作一种炸弹使用，玩家可以使用物理枪将其抓住，并甩向可破坏的墙壁或者精英怪。
-shooter在charger的基础上能够分裂外壳，伸出两挺机枪（形象借鉴了传送门的自动炮塔）。与玩家保持一定距离并射击。当玩家在掩体之后，shooter在射击的同时会左右绕行尝试绕过掩体。当玩家在掩体之后时间过长，shooter会朝掩体持续射击直至破坏掩体。以此逼迫玩家采取更加主动的策略。`,
-        src: "assets/videos/overspace-enemies.mp4",
-        duration: "00:48"
+        "id": "overspace-v2",
+        "title": "02. 武器和弹药",
+        "desc": "游戏中掉落的武器通过碰撞拾取，弹药数量极少，用完自动丢弃。武器的稀缺在保证玩家对武器新鲜感的同时，增加玩家推进游戏的动力。也让游戏的物理玩法维持核心地位。",
+        "src": "assets/videos/overspace-weapon.mp4",
+        "duration": "00:14"
       },
       {
-        id: "overspace-v4",
-        title: "04. 精英敌人牵引交互与战术博弈",
-        desc: "配备高威胁近战牵引光束的精英无人机；被牵引时需利用反冲力反推或借助环境掩体切断光束，构建高压拉扯对抗。",
-        src: "assets/videos/overspace-elite.mp4",
-        duration: "00:29"
+        "id": "overspace-v3",
+        "title": "03. 基础敌人",
+        "desc": "基础敌人通用一副基础的身体和AI，但使用武器和行为参数有调整。\ncharger（最基础的冲撞者）是最基础的敌方单位。它会首先与玩家拉开距离，在合适的距离下向玩家冲撞。自身生命值较低，碰撞产生的爆炸具有杀伤力。该特性允许玩家将其当作一种炸弹使用，玩家可以使用物理枪将其抓住，并甩向可破坏的墙壁或者精英怪。\nshooter在charger的基础上装备了RCS（移动时不改变旋转），且能够分裂外壳，伸出两挺机枪（形象借鉴了传送门的自动炮塔）。与玩家保持一定距离并射击。当玩家在掩体之后，shooter在射击的同时会左右绕行尝试绕过掩体。当玩家在掩体之后时间过长，shooter会朝掩体持续射击直至破坏掩体。以此逼迫玩家采取更加主动的策略。",
+        "src": "assets/videos/overspace-enemies.mp4",
+        "duration": "00:48"
       },
       {
-        id: "overspace-v5",
-        title: "05. 狙击关卡视线遮挡与掩体机动",
-        desc: "高精度红外狙击无人机关卡设计；玩家必须结合巨型空间站骨架柱体掩体进行视线遮挡盲区推进，在致命射击间隙切入盲区反打。",
-        src: "assets/videos/overspace-sniper.mp4",
-        duration: "00:56"
+        "id": "overspace-v4",
+        "title": "04. 精英冲撞敌人设计",
+        "desc": "视频中的大型冲撞敌人有可破坏的外壳和核心。玩家需要破坏它的外壳并摧毁核心才能将其解决。最直接的办法是抓住其他charger，利用charger的爆炸破坏它的外壳并摧毁核心。如果玩家有远程射击武器也可以对其进行射击破坏。该精英怪旨在让玩家更加熟悉该游戏的可破坏机制和爆炸机制，为后续关卡提供必要知识。",
+        "src": "assets/videos/overspace-elite.mp4",
+        "duration": "00:29"
       },
       {
-        id: "overspace-v6",
-        title: "06. 猎手敌人暗区潜伏与动态照明",
-        desc: "完全隐匿在无光深空暗区的潜伏型猎手敌人；依靠飞船探照灯有限扇形视野与雷达告警指示探照定位，带来高压惊悚与突袭反制体验。",
-        src: "assets/videos/overspace-hunter.mp4",
-        duration: "00:31"
+        "id": "overspace-v5",
+        "title": "05. 狙击手关卡设计",
+        "desc": "该关卡展现了一个继承shooter而来的另一种高级敌人sniper。他们视野范围极广。能够预判玩家的移动路线并射击（借鉴了半条命2的联合军狙击手）。sniper威力强大，通常只需1-2发（取决于子弹击中时的角度）就能摧毁玩家。玩家在此关卡内不能在空地长时间暴露，必须以两边的石头为掩护前进。当走到尽头时，玩家能够遇到足够轻，能够被物理枪抓取移动的物体。玩家将推断出自己能够抓取物体作为盾牌抵挡狙击手的子弹，接近狙击手并消灭。该关卡旨在让玩家学会使用物理枪抓住物体以形成移动掩护。",
+        "src": "assets/videos/overspace-sniper.mp4",
+        "duration": "00:56"
+      },
+      {
+        "id": "overspace-v6",
+        "title": "06. 猎人设计",
+        "desc": "该关卡布置了一种敌人名为hunter,它未继承任何npc。它是一种无意识的怪物，力量极大，但怕光。接触到玩家即可杀死玩家。速度极快，当玩家暴露在他的直接视线内一定时间后，他就会以极高的速度接近玩家。因此玩家必须间歇使用此前拾取的手电筒照射它，并在压力之下逃出生天。此关卡旨在让玩家熟悉物理枪的特性。（关卡最后会让玩家用物理枪强行掰开损坏的大门）",
+        "src": "assets/videos/overspace-hunter.mp4",
+        "duration": "00:31"
       }
     ],
-    links: {
-      itch: "https://kineticplanet.itch.io/overspace",
-      pan: "https://pan.baidu.com/s/1Ib28cr995nGAERLTFYQfsA?pwd=j6tn"
+    "links": {
+      "itch": "https://kineticplanet.itch.io/overspace",
+      "pan": "https://pan.baidu.com/s/1Ib28cr995nGAERLTFYQfsA?pwd=j6tn"
     },
-    metaText: "Godot 4.x · PC / Steam · 2025.01 - 至今 · 在研商业项目",
-    overview: "取消常规重力与地面行走的 2D 太空战术飞行游戏。飞船矢量机动、武器战斗与空间关卡均围绕牛顿第三定律反作用力与多体天体引力场展开，探索失重环境下的纯物理反馈、战术拉扯与轨道博弈。",
-    keyPoints: [
+    "metaText": "Godot 4.x · PC / Steam · 2025.01 - 至今 · 在研商业项目",
+    "overview": "所有物体继承刚体。围绕引力、惯性、碰撞、摩擦力等物理属性设计关卡和战斗。",
+    "keyPoints": [
       {
-        title: "力学核心闭环",
-        desc: "取消常规直接坐标位移，推进器推力、武器后坐力与碰撞冲量均基于刚体物理与反作用力实时解算。"
+        "title": "力学核心闭环",
+        "desc": "取消常规直接坐标位移，推进器推力、武器后坐力与碰撞冲量均基于刚体物理与反作用力实时解算。"
       },
       {
-        title: "动态轨道积分预测",
-        desc: "实时积分多体引力场与推进推力，在 HUD 绘制轨道预测线，支持引力弹弓与无动力滑行变轨。"
+        "title": "动态轨道积分预测",
+        "desc": "实时积分多体引力场与推进推力，在 HUD 绘制轨道预测线，支持引力弹弓与无动力滑行变轨。"
       },
       {
-        title: "去背包与模块化抛弃",
-        desc: "限制单体弹药上限，耗尽即自动废弃弹出，促使玩家在高速交火中拾取掉落动态调整打法。"
+        "title": "去背包与模块化抛弃",
+        "desc": "限制单体弹药上限，耗尽即自动废弃弹出，促使玩家在高速交火中拾取掉落动态调整打法。"
       },
       {
-        title: "多样化失重战术 AI",
-        desc: "包含基础巡逻蜂群、近战牵引精英、红外狙击无人机及暗区潜伏猎手，构建多层次空间交火体验。"
+        "title": "多样化失重战术 AI",
+        "desc": "包含基础巡逻蜂群、近战牵引精英、红外狙击无人机及暗区潜伏猎手，构建多层次空间交火体验。"
       }
     ],
-    controls: "【WASD】推进机动 | 【鼠标】朝向瞄准 | 【左键】主武器 | 【右键】副道具 | 【长按G】丢弃装备"
+    "controls": "【WASD】推进机动 | 【鼠标】朝向瞄准 | 【左键】主武器 | 【右键】副道具 | 【长按G】丢弃装备"
   },
   {
-    id: "hostage-rescue",
-    title: "《人质营救关卡设计》",
-    subtitle: "立体战术网格与高压时限机制战棋关卡",
-    category: "关卡设计 / 回合制战棋",
-    engine: "Godot 4.7",
-    year: "2024",
-    status: "可玩原型 Demo",
-    role: "关卡设计 / 战术系统策划 / GDScript 实现",
-    thumbnail: "assets/thumbnails/hostage_rescue.jpg",
-    icon: "assets/thumbnails/hostage_rescue.jpg",
-    videos: [
+    "id": "hostage-rescue",
+    "title": "《人质营救关卡设计》",
+    "subtitle": "立体战术网格与高压时限机制战棋关卡",
+    "category": "关卡设计 / 回合制战棋",
+    "engine": "Godot 4.7",
+    "year": "2024",
+    "status": "可玩原型 Demo",
+    "role": "关卡设计 / 战术系统策划 / GDScript 实现",
+    "thumbnail": "assets/thumbnails/hostage_rescue.jpg",
+    "icon": "assets/thumbnails/hostage_rescue.jpg",
+    "videos": [
       {
-        id: "hostage-v1",
-        title: "关卡完整实机通关演示",
-        desc: "基于 Godot 4.7 开发的 XCOM 风格战术回合制战棋关卡。从初始隐蔽渗透、破门解救人质到登顶固守阻击三波增援并成功撤离的完整实机通关录像（3分54秒）。",
-        src: "assets/videos/hostage-full.mp4",
-        bvid: "BV1pon16WEuu",
-        iframeSrc: "https://player.bilibili.com/player.html?isOutside=true&aid=117482824140776&bvid=BV1pon16WEuu&cid=42946924020&p=1",
-        duration: "03:54"
+        "id": "hostage-v1",
+        "title": "关卡完整实机通关演示",
+        "desc": "关卡背景：\n反恐行动，玩家扮演特种兵小队，在恐怖分子手中营救VIP。敌方有三个种类：射手、近战战士、自爆步兵。\n胜利目标：\n保障VIP存活并前往屋顶撤离。\n失败条件：\nVIP死亡，或者队伍里没有存活的队员。\n基础规则：\n与幽浮2游戏机制类似，游戏关卡是战棋棋盘，角色和建筑都占据特定的格子数。所有单位每回合有两个行动点。角色可以使用行动点进行移动、射击、伏击、近战、投掷手雷等操作。\n玩家每个行动点最高只能移动特定的格子数。\n玩家如果进行射击、监视、近战、投掷手雷等攻击动作（在本demo里是除了移动的所有动作）立刻结束本角色的回合，剩余行动点丢弃。\n游戏关卡中遍布一些掩体，玩家站在掩体后面就能减少掩体前方180度范围内的敌人击中自己的概率。手雷可以摧毁掩体。\n切换角色：按tab键切换当前操作的角色。shift+tab反向切换。\n移动：当聚焦到一个角色时，使用鼠标右键点击地面上的蓝色或黄色格子，可以移动角色。蓝色格子消耗1个行动点，黄色格子消耗2个行动点。\n射击：射击扣除3-5点血量。根据距离、掩体的情况，会有不同程度的命中率。未命中则不造成伤害。\n近战：近战造成3-5点伤害，一定命中，但必须近身使用。且只有特定角色有近战能力。\n隐藏机制：游戏开始时，玩家处于隐藏模式。此时敌人附近的可移动达格子会显示眼睛的图标。当玩家进入这些眼睛图标格子里，敌人会发现玩家小队的存在，并立即使用1个行动点移动寻找掩护。接着才继续玩家的回合。\n监视：监视技能让角色在敌人回合自动朝视野内的、警觉的并移动的敌人开枪。通常用于伏击敌人在掩体外面的时刻。\n营救人质：当房间内的敌人警觉后，敌人会优先攻击VIP,因此玩家必须至少在一回合之内解决远程射手敌人。",
+        "src": "BV1pon16WEuu",
+        "bvid": "BV1pon16WEuu",
+        "iframeSrc": "https://player.bilibili.com/player.html?isOutside=true&aid=117482824140776&bvid=BV1pon16WEuu&cid=42946924020&p=1",
+        "duration": "03:54"
       }
     ],
-    links: {
-      github: "https://github.com/spaceyjase/TurnBasedStrategyGodot"
+    "links": {
+      "github": "https://github.com/spaceyjase/TurnBasedStrategyGodot"
     },
-    metaText: "Godot 4.7 · GDScript · 关卡设计与系统原型 · 已完成",
-    overview: "基于 Godot 4.7 开发的 XCOM 风格战术回合制战棋关卡。构建了 40×40 战场与 12×10 双层可破坏建筑，围绕“隐蔽潜入 -> 强攻歼灭挟持看守 -> 双层高地固守抗击三波援兵 -> 屋顶直升机撤离”展开高紧张度心流设计。",
-    keyPoints: [
+    "metaText": "Godot 4.7 · GDScript · 关卡设计与系统原型 · 已完成",
+    "overview": "基于 Godot 4.7 开发的 XCOM 风格战术回合制战棋关卡。构建了 40×40 战场与 12×10 双层可破坏建筑，围绕“隐蔽潜入 -> 强攻歼灭挟持看守 -> 双层高地固守抗击三波援兵 -> 屋顶直升机撤离”展开高紧张度心流设计。",
+    "keyPoints": [
       {
-        title: "紧迫时限博弈（看守处决机制）",
-        desc: "看守小队被惊动后立即挟持人质，玩家必须在单回合内消灭所有挟持者，否则人质即刻被处决导致任务失败，极大提升决策压力。"
+        "title": "紧迫时限博弈（看守处决机制）",
+        "desc": "看守小队被惊动后立即挟持人质，玩家必须在单回合内消灭所有挟持者，否则人质即刻被处决导致任务失败，极大提升决策压力。"
       },
       {
-        title: "隐蔽潜入与 Scamper 警戒机制",
-        desc: "还原 XCOM 风格全队隐蔽状态与巡逻 Pod 机制。敌方未察觉时可规划盲区走位；惊动敌人瞬间触发免费找掩体机制（Scamper），并支持伏击监视射击（Overwatch）。"
+        "title": "隐蔽潜入与 Scamper 警戒机制",
+        "desc": "还原 XCOM 风格全队隐蔽状态与巡逻 Pod 机制。敌方未察觉时可规划盲区走位；惊动敌人瞬间触发免费找掩体机制（Scamper），并支持伏击监视射击（Overwatch）。"
       },
       {
-        title: "双层立体建筑与视距遮挡",
-        desc: "12×10 核心建筑包含门、窗半掩体、外墙梯子与可走屋顶。镜头降落时屋顶动态半透明以呈现室内纵深战术，自如完成从地面潜入到梯子登顶的高低差战术转移。"
+        "title": "双层立体建筑与视距遮挡",
+        "desc": "12×10 核心建筑包含门、窗半掩体、外墙梯子与可走屋顶。镜头降落时屋顶动态半透明以呈现室内纵深战术，自如完成从地面潜入到梯子登顶的高低差战术转移。"
       },
       {
-        title: "高地防守与波次援军收缩",
-        desc: "成功救出人质后触发三波动态增援包夹，迫使玩家掩护人质登顶，依托屋顶女儿墙与箱子掩体构筑火力交叉阵地，坚守至撤离点抵达。"
+        "title": "高地防守与波次援军收缩",
+        "desc": "成功救出人质后触发三波动态增援包夹，迫使玩家掩护人质登顶，依托屋顶女儿墙与箱子掩体构筑火力交叉阵地，坚守至撤离点抵达。"
       }
     ],
-    controls: "【WASD】平移相机 | 【Q/E】旋转90° | 【滚轮】升降相机/切屋顶透视 | 【左键】选人/执行动作 | 【Tab】切换队员 | 【R】手动切换屋顶显示"
+    "controls": "【WASD】平移相机 | 【Q/E】旋转90° | 【滚轮】升降相机/切屋顶透视 | 【左键】选人/执行动作 | 【Tab】切换队员 | 【R】手动切换屋顶显示"
   }
 ];
 

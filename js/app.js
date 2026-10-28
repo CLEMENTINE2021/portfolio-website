@@ -32,10 +32,7 @@
 
     // 下面左侧：该作品的视频片段选择
     subvideoSidebar: document.getElementById('subvideoSidebar'),
-    currentProjectSubvideoLabel: document.getElementById('currentProjectSubvideoLabel'),
-    subvideosCountLabel: document.getElementById('subvideosCountLabel'),
     subvideoListContainer: document.getElementById('subvideoListContainer'),
-    copyEmailQuickBtn: document.getElementById('copyEmailQuickBtn'),
 
     // 下面右侧：视频播放器与展示舞台
     videoWrapper: document.getElementById('videoWrapper'),
@@ -57,32 +54,21 @@
     progressTooltip: document.getElementById('progressTooltip'),
     playPauseBtn: document.getElementById('playPauseBtn'),
     playPauseBtnIcon: document.getElementById('playPauseBtnIcon'),
-    restartBtn: document.getElementById('restartBtn'),
-    currentTime: document.getElementById('currentTime'),
-    totalDuration: document.getElementById('totalDuration'),
+    nextClipBtn: document.getElementById('nextClipBtn'),
     muteToggleBtn: document.getElementById('muteToggleBtn'),
     volumeBtnIcon: document.getElementById('volumeBtnIcon'),
     volumeSlider: document.getElementById('volumeSlider'),
-    localVideoPicker: document.getElementById('localVideoPicker'),
     fullscreenBtn: document.getElementById('fullscreenBtn'),
     fullscreenLabel: document.getElementById('fullscreenLabel'),
-
-    // 顶部全局工具
-    manageProjectsBtn: document.getElementById('manageProjectsBtn'),
-    shortcutsBtn: document.getElementById('shortcutsBtn'),
 
     // 项目简介说明 (Project Details - 视频上方)
     projectPosterSide: document.getElementById('projectPosterSide'),
     projectPosterImg: document.getElementById('projectPosterImg'),
     projectPosterPlaceholder: document.getElementById('projectPosterPlaceholder'),
     quickPosterPicker: document.getElementById('quickPosterPicker'),
-    detailCategoryLabel: document.getElementById('detailCategoryLabel'),
-    detailStatusLabel: document.getElementById('detailStatusLabel'),
-    detailMetaText: document.getElementById('detailMetaText'),
     detailTitle: document.getElementById('detailTitle'),
     detailSubtitle: document.getElementById('detailSubtitle'),
     editProjectBtn: document.getElementById('editProjectBtn'),
-    detailActionsContainer: document.getElementById('detailActionsContainer'),
     detailOverviewText: document.getElementById('detailOverviewText'),
 
     // 空白视频占位与上传
@@ -91,8 +77,6 @@
 
     // 视频片段说明 (Clip Details - 视频下方)
     clipDetailCard: document.getElementById('clipDetailCard'),
-    clipMetaIndex: document.getElementById('clipMetaIndex'),
-    clipDurationTag: document.getElementById('clipDurationTag'),
     clipTitle: document.getElementById('clipTitle'),
     clipDesc: document.getElementById('clipDesc'),
     editClipBtn: document.getElementById('editClipBtn'),
@@ -101,17 +85,8 @@
     projectModal: document.getElementById('projectModal'),
     projectForm: document.getElementById('projectForm'),
     modalProjectTabs: document.getElementById('modalProjectTabs'),
-    modalClipCount: document.getElementById('modalClipCount'),
-    modalAddClipBtn: document.getElementById('modalAddClipBtn'),
-    modalClipsList: document.getElementById('modalClipsList'),
-    deleteProjectBtn: document.getElementById('deleteProjectBtn'),
     closeProjectModalBtn: document.getElementById('closeProjectModalBtn'),
     cancelFormBtn: document.getElementById('cancelFormBtn'),
-    formVideoFileInput: document.getElementById('formVideoFileInput'),
-    formThumbFilePicker: document.getElementById('formThumbFilePicker'),
-    formIconFilePicker: document.getElementById('formIconFilePicker'),
-    exportDataBtn: document.getElementById('exportDataBtn'),
-    resetDataBtn: document.getElementById('resetDataBtn'),
 
     // 模态框 2: 编辑片段
     clipEditModal: document.getElementById('clipEditModal'),
@@ -122,6 +97,7 @@
     clipFormSrc: document.getElementById('clipFormSrc'),
     clipFormDesc: document.getElementById('clipFormDesc'),
     clipModalFilePicker: document.getElementById('clipModalFilePicker'),
+    saveClipBtn: document.getElementById('saveClipBtn'),
     deleteCurrentClipBtn: document.getElementById('deleteCurrentClipBtn'),
     closeClipModalBtn: document.getElementById('closeClipModalBtn'),
     cancelClipFormBtn: document.getElementById('cancelClipFormBtn'),
@@ -131,14 +107,8 @@
     closeShortcutsModalBtn: document.getElementById('closeShortcutsModalBtn'),
     confirmShortcutsBtn: document.getElementById('confirmShortcutsBtn'),
 
-    // 模态框 4: 管理员身份验证
-    brandLogo: document.getElementById('brandLogo'),
+    // 管理员状态指示
     adminStatusIndicator: document.getElementById('adminStatusIndicator'),
-    adminAuthModal: document.getElementById('adminAuthModal'),
-    adminAuthForm: document.getElementById('adminAuthForm'),
-    adminPasswordInput: document.getElementById('adminPasswordInput'),
-    closeAdminModalBtn: document.getElementById('closeAdminModalBtn'),
-    cancelAdminBtn: document.getElementById('cancelAdminBtn'),
 
     toastContainer: document.getElementById('toastContainer')
   };
@@ -146,52 +116,31 @@
   // -------------------------------------------------------------
   // 管理员权限与环境认证
   // -------------------------------------------------------------
-  const ADMIN_STORAGE_KEY = 'portfolio_admin_auth';
-  const ADMIN_PASSWORD = 'wenxuan2026';
+  // -------------------------------------------------------------
+  // 管理员权限控制 (严格限定：仅 localhost / 127.0.0.1 本地环境具备管理员模式)
+  // -------------------------------------------------------------
+  function isLocalHost() {
+    const host = window.location.hostname;
+    return host === 'localhost' || host === '127.0.0.1' || host === '' || host === '0.0.0.0';
+  }
 
   function checkAdminAuth() {
-    const isLocal = ['localhost', '127.0.0.1', ''].includes(window.location.hostname);
-
-    // 检查 URL 参数是否包含管理员暗号 (?edit=wenxuan2026 或 ?admin=wenxuan2026)
-    const params = new URLSearchParams(window.location.search);
-    const secretKey = params.get('edit') || params.get('admin');
-
-    if (secretKey === ADMIN_PASSWORD) {
-      localStorage.setItem(ADMIN_STORAGE_KEY, 'true');
-      state.isAdmin = true;
-
-      // 净化 URL，清除地址栏中暴露的暗号密码
-      params.delete('edit');
-      params.delete('admin');
-      const newSearch = params.toString() ? '?' + params.toString() : '';
-      if (history.replaceState) {
-        history.replaceState(null, '', window.location.pathname + newSearch + window.location.hash);
-      }
-      setTimeout(() => showToast('已成功开启管理员编辑模式'), 400);
-    } else if (params.has('logout') || params.has('exit')) {
-      localStorage.removeItem(ADMIN_STORAGE_KEY);
-      state.isAdmin = isLocal;
-      params.delete('logout');
-      params.delete('exit');
-      const newSearch = params.toString() ? '?' + params.toString() : '';
-      if (history.replaceState) {
-        history.replaceState(null, '', window.location.pathname + newSearch + window.location.hash);
-      }
-      setTimeout(() => showToast('已退出管理员编辑模式'), 400);
-    } else {
-      state.isAdmin = isLocal || localStorage.getItem(ADMIN_STORAGE_KEY) === 'true';
-    }
-
+    // 严格设定：只有 localhost 是管理员模式，其它所有环境（线上域名/手机访问等）绝无管理员模式
+    state.isAdmin = isLocalHost();
     applyAdminState();
   }
 
   function applyAdminState() {
+    state.isAdmin = isLocalHost();
     document.body.classList.toggle('is-admin-mode', state.isAdmin);
+
     if (els.adminStatusIndicator) {
-      const isLocal = ['localhost', '127.0.0.1', ''].includes(window.location.hostname);
-      els.adminStatusIndicator.innerHTML = isLocal
-        ? '<span class="indicator-dot">●</span> 本地模式 (全权限)'
-        : '<span class="indicator-dot">●</span> 管理员模式 (点击退出)';
+      if (state.isAdmin) {
+        els.adminStatusIndicator.innerHTML = '<span class="indicator-dot">●</span> 本地编辑模式 (实时写入文件)';
+        els.adminStatusIndicator.style.display = 'inline-flex';
+      } else {
+        els.adminStatusIndicator.style.display = 'none';
+      }
     }
     if (els.topProjectListContainer && state.projects.length > 0) {
       renderTopProjectStrip();
@@ -218,9 +167,16 @@
     selectProject(initialIndex, 0, true);
     setupEventListeners();
     setupKeyboardShortcuts();
+
+    if (restoredFromCache) {
+      showToast('检测到上次未写入 js/projects.js 的修改，已从浏览器缓存恢复，下次保存时会写入文件');
+    }
   }
 
   const DATA_VERSION = 'v7_20261028_synced_user_edits';
+  // 'portfolio_unsynced' = '1' 表示浏览器里有尚未写入 js/projects.js 的修改 (js/projects.js 才是数据源)
+  const UNSYNCED_KEY = 'portfolio_unsynced';
+  let restoredFromCache = false;
 
   // -------------------------------------------------------------
   // 工具函数: 提取与检测 Bilibili BV 号
@@ -238,18 +194,39 @@
   }
 
   // -------------------------------------------------------------
+  // 工具函数: HTML 转义 (数据值拼入 innerHTML 前必须转义)
+  // -------------------------------------------------------------
+  function escapeHtml(str) {
+    return String(str == null ? '' : str).replace(/[&<>"']/g, ch => ({
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#39;'
+    }[ch]));
+  }
+
+  // -------------------------------------------------------------
   // 数据存取与格式规范化
   // -------------------------------------------------------------
   function loadProjectsData() {
     try {
+      const isLocal = isLocalHost();
       const storedVersion = localStorage.getItem('portfolio_data_version');
       const stored = localStorage.getItem('portfolio_projects_custom');
-      if (stored && storedVersion === DATA_VERSION) {
+      const unsynced = localStorage.getItem(UNSYNCED_KEY) === '1';
+      // js/projects.js 是数据源；仅当本地有尚未写入文件的修改时才读取 localStorage 缓存，
+      // 否则过期缓存 (如 localhost 与 127.0.0.1 不同源、手动改过 projects.js) 会覆盖较新的文件内容
+      if (isLocal && stored && storedVersion === DATA_VERSION && unsynced) {
         state.projects = JSON.parse(stored);
+        restoredFromCache = true;
       } else if (window.PORTFOLIO_DATA && window.PORTFOLIO_DATA.projects) {
         state.projects = [...window.PORTFOLIO_DATA.projects];
-        localStorage.setItem('portfolio_data_version', DATA_VERSION);
-        localStorage.removeItem('portfolio_projects_custom');
+        if (isLocal) {
+          localStorage.setItem('portfolio_data_version', DATA_VERSION);
+          localStorage.removeItem('portfolio_projects_custom');
+          localStorage.removeItem(UNSYNCED_KEY);
+        }
       }
     } catch (e) {
       console.warn('读取本地数据失败，使用默认作品集', e);
@@ -273,13 +250,74 @@
     });
   }
 
+  // 保存计数：每次保存 +1，用于判断某次同步完成时是否已有更新的修改
+  let saveSeq = 0;
+  // 同步串行化：服务器是多线程的，并发 POST 可能乱序落盘导致旧快照覆盖新数据
+  let syncChain = Promise.resolve();
+
+  function notifySyncFailed() {
+    showToast('⚠️ 未能写入 js/projects.js（请用 ./start.sh 启动 server.py），修改已暂存在浏览器中');
+  }
+
+  // 实际执行一次同步 (开始时才序列化 state.projects，保证发送最新状态；绝不 reject，避免链条卡死)
+  async function doSync() {
+    const seqAtStart = saveSeq;
+    try {
+      const response = await fetch('/api/save-projects', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(state.projects)
+      });
+      if (response.ok) {
+        const res = await response.json();
+        if (res.success) {
+          if (res.updatedProjects) {
+            // 只回填服务器落地后的图片路径，不替换 state.projects，
+            // 否则已渲染列表的事件闭包和进行中的编辑会指向旧对象，修改被静默丢弃
+            res.updatedProjects.forEach((updated, idx) => {
+              const proj = state.projects[idx];
+              if (!proj || proj.id !== updated.id) return;
+              if (proj.thumbnail && proj.thumbnail.startsWith('data:image/')) proj.thumbnail = updated.thumbnail;
+              if (proj.icon && proj.icon.startsWith('data:image/')) proj.icon = updated.icon;
+            });
+            try {
+              localStorage.setItem('portfolio_projects_custom', JSON.stringify(state.projects));
+            } catch (e) {}
+          }
+          // 同步期间若又有新的保存，则仍有未写入文件的修改，保留标记等待下一次同步
+          if (seqAtStart === saveSeq) {
+            try {
+              localStorage.removeItem(UNSYNCED_KEY);
+            } catch (e) {}
+          }
+          showToast('💾 已同步修改本地 js/projects.js 文件！');
+          return;
+        }
+      }
+      notifySyncFailed();
+    } catch (e) {
+      notifySyncFailed();
+    }
+  }
+
+  function syncProjectsToServer() {
+    syncChain = syncChain.then(doSync);
+    return syncChain;
+  }
+
   function saveCustomProjects() {
+    saveSeq++;
     try {
       localStorage.setItem('portfolio_data_version', DATA_VERSION);
       localStorage.setItem('portfolio_projects_custom', JSON.stringify(state.projects));
+      localStorage.setItem(UNSYNCED_KEY, '1');
     } catch (e) {
       console.error('无法保存到 localStorage', e);
     }
+    // 触发自动同步写入本地代码文件
+    syncProjectsToServer();
   }
 
   // -------------------------------------------------------------
@@ -327,6 +365,36 @@
   }
 
   // -------------------------------------------------------------
+  // 工具函数: 上传本地视频到 server.py，落地为 assets/videos/ 下的真实文件
+  // (blob: 临时地址刷新即失效，也无法随网站部署，因此不再写入数据)
+  // -------------------------------------------------------------
+  const PAGES_FILE_LIMIT = 25 * 1024 * 1024; // Cloudflare Pages 单文件上限 25 MiB
+
+  async function uploadVideoFile(file) {
+    const response = await fetch(`/api/upload-video?name=${encodeURIComponent(file.name)}`, {
+      method: 'POST',
+      headers: { 'Content-Type': file.type || 'application/octet-stream' },
+      body: file
+    });
+    let res = null;
+    try {
+      res = await response.json();
+    } catch (e) {}
+    if (!response.ok || !res || !res.success) {
+      throw new Error((res && res.error) || `HTTP ${response.status}`);
+    }
+    if (file.size > PAGES_FILE_LIMIT) {
+      setTimeout(() => showToast(`注意: ${file.name} 超过 25 MiB，部署到 Cloudflare Pages 会失败，建议压缩`), 2400);
+    }
+    return res.src;
+  }
+
+  function showUploadError(err) {
+    console.error('视频上传失败', err);
+    showToast(`视频上传失败 (${err.message})，请确认通过 ./start.sh 启动了 server.py`);
+  }
+
+  // -------------------------------------------------------------
   // 获取项目对应的高清矢量图标 SVG 或自定义图片图标
   // -------------------------------------------------------------
   function getProjectIconSvg(project) {
@@ -362,7 +430,7 @@
       if (iconStr.startsWith('<svg')) {
         return iconStr;
       }
-      return `<img src="${iconStr}" alt="${project.title}" class="project-icon-img" onerror="this.onerror=null;this.parentElement.innerHTML=getProjectIconSvg({id:'${project.id}'});">`;
+      return `<img src="${escapeHtml(iconStr)}" alt="${escapeHtml(project.title)}" class="project-icon-img">`;
     }
     return getProjectIconSvg(project);
   }
@@ -389,8 +457,17 @@
         <div class="project-icon-wrapper">
           ${getProjectIcon(project)}
         </div>
-        <span class="top-project-title-text">${project.title}</span>
+        <span class="top-project-title-text">${escapeHtml(project.title)}</span>
       `;
+
+      // 自定义图标加载失败时回退为内置 SVG 图标 (IIFE 内函数无法在内联 onerror 中调用)
+      const iconImg = card.querySelector('img.project-icon-img');
+      if (iconImg) {
+        iconImg.addEventListener('error', () => {
+          const wrapper = card.querySelector('.project-icon-wrapper');
+          if (wrapper) wrapper.innerHTML = getProjectIconSvg(project);
+        }, { once: true });
+      }
 
       card.addEventListener('click', () => {
         selectProject(originalIdx, 0);
@@ -482,6 +559,30 @@
   }
 
   // -------------------------------------------------------------
+  // 工具函数: 片段顺序调整
+  // -------------------------------------------------------------
+  function reorderClips(project, fromIdx, toIdx, insertAfter) {
+    if (fromIdx === toIdx && !insertAfter) return;
+    const videos = project.videos;
+    const [movedClip] = videos.splice(fromIdx, 1);
+    let newIdx = toIdx;
+    if (fromIdx < toIdx) {
+      newIdx = insertAfter ? toIdx : toIdx - 1;
+    } else {
+      newIdx = insertAfter ? toIdx + 1 : toIdx;
+    }
+    if (newIdx < 0) newIdx = 0;
+    if (newIdx > videos.length) newIdx = videos.length;
+    videos.splice(newIdx, 0, movedClip);
+  }
+
+  function cleanupDragOverStyles() {
+    document.querySelectorAll('.subvideo-item-card').forEach(el => {
+      el.classList.remove('drag-over-top', 'drag-over-bottom', 'dragging');
+    });
+  }
+
+  // -------------------------------------------------------------
   // 下面右侧：选择该作品的不同视频片段 (Subvideo Sidebar)
   // -------------------------------------------------------------
   function renderSubvideoList() {
@@ -489,13 +590,9 @@
     if (!project) return;
 
     const videos = project.videos || [];
-    if (els.currentProjectSubvideoLabel) {
-      els.currentProjectSubvideoLabel.textContent = project.title;
-    }
-    if (els.subvideosCountLabel) {
-      els.subvideosCountLabel.textContent = `${videos.length} 个片段`;
-    }
     els.subvideoListContainer.innerHTML = '';
+
+    let draggedClipIndex = null;
 
     videos.forEach((vid, vIdx) => {
       const isSelected = vIdx === state.currentVideoIndex;
@@ -507,16 +604,27 @@
       item.setAttribute('aria-selected', isSelected ? 'true' : 'false');
       item.tabIndex = 0;
 
-      const displayIdx = String(vIdx + 1).padStart(2, '0');
+      // 管理员模式下手柄：三条杠拖拽排序 (显式设置 draggable="true")
+      const dragHandleHtml = state.isAdmin ? `
+        <span class="clip-drag-handle admin-only" draggable="true" title="按住三条杠拖拽调整片段顺序" aria-label="按住拖拽排序">
+          <span class="drag-bar"></span>
+          <span class="drag-bar"></span>
+          <span class="drag-bar"></span>
+        </span>
+      ` : '';
 
-      // 仅显示片段标题，去除正文与时长，保持紧凑纯净
       item.innerHTML = `
+        ${dragHandleHtml}
         <div class="clip-row-title-wrap">
-          <span class="wifi-row-title">${vid.title}</span>
+          <span class="wifi-row-title">${escapeHtml(vid.title)}</span>
         </div>
       `;
 
-      item.addEventListener('click', () => {
+      item.addEventListener('click', (e) => {
+        // 如果点击的是拖拽手柄，不触发播放切换
+        if (e.target.closest('.clip-drag-handle')) {
+          return;
+        }
         selectSubvideo(vIdx);
       });
 
@@ -526,6 +634,112 @@
           selectSubvideo(vIdx);
         }
       });
+
+      // 管理员模式下手柄拖拽事件绑定
+      if (state.isAdmin) {
+        const handle = item.querySelector('.clip-drag-handle');
+        if (handle) {
+          // 桌面鼠标拖拽事件 (直接以手柄作为 draggable 发起者)
+          handle.addEventListener('dragstart', (e) => {
+            draggedClipIndex = vIdx;
+            item.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/plain', String(vIdx));
+            if (e.dataTransfer.setDragImage) {
+              e.dataTransfer.setDragImage(item, 20, 26);
+            }
+          });
+
+          handle.addEventListener('dragend', () => {
+            item.classList.remove('dragging');
+            cleanupDragOverStyles();
+            draggedClipIndex = null;
+          });
+
+          // 触屏滑动排序支持 (兼容触控板与移动端)
+          handle.addEventListener('touchstart', (e) => {
+            draggedClipIndex = vIdx;
+            item.classList.add('dragging');
+          }, { passive: true });
+
+          handle.addEventListener('touchmove', (e) => {
+            if (draggedClipIndex === null) return;
+            const touchY = e.touches[0].clientY;
+            const targetCard = document.elementFromPoint(e.touches[0].clientX, touchY)?.closest('.subvideo-item-card');
+            cleanupDragOverStyles();
+            if (targetCard && targetCard !== item) {
+              const rect = targetCard.getBoundingClientRect();
+              const isTop = (touchY - rect.top) < (rect.height / 2);
+              targetCard.classList.toggle('drag-over-top', isTop);
+              targetCard.classList.toggle('drag-over-bottom', !isTop);
+            }
+          }, { passive: true });
+
+          handle.addEventListener('touchend', (e) => {
+            if (draggedClipIndex === null) return;
+            const touchY = e.changedTouches[0].clientY;
+            const targetCard = document.elementFromPoint(e.changedTouches[0].clientX, touchY)?.closest('.subvideo-item-card');
+            if (targetCard && targetCard !== item) {
+              const toIdx = parseInt(targetCard.dataset.vidx, 10);
+              const rect = targetCard.getBoundingClientRect();
+              const insertAfter = (touchY - rect.top) >= (rect.height / 2);
+
+              const currentClip = project.videos[state.currentVideoIndex];
+              reorderClips(project, draggedClipIndex, toIdx, insertAfter);
+              const newSelectedIdx = project.videos.indexOf(currentClip);
+              if (newSelectedIdx !== -1) {
+                state.currentVideoIndex = newSelectedIdx;
+              }
+              saveCustomProjects();
+              renderSubvideoList();
+              showToast('已更新片段顺序');
+            }
+            cleanupDragOverStyles();
+            draggedClipIndex = null;
+          });
+
+          // 放置目标事件 (绑定在整个卡片上，方便接收放下动作)
+          item.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+            const rect = item.getBoundingClientRect();
+            const isTop = (e.clientY - rect.top) < (rect.height / 2);
+            item.classList.toggle('drag-over-top', isTop);
+            item.classList.toggle('drag-over-bottom', !isTop);
+          });
+
+          item.addEventListener('dragleave', (e) => {
+            if (!item.contains(e.relatedTarget)) {
+              item.classList.remove('drag-over-top', 'drag-over-bottom');
+            }
+          });
+
+          item.addEventListener('drop', (e) => {
+            e.preventDefault();
+            item.classList.remove('drag-over-top', 'drag-over-bottom');
+            const fromIdx = draggedClipIndex;
+            const toIdx = vIdx;
+            if (fromIdx === null || fromIdx === undefined || fromIdx === toIdx) return;
+
+            const rect = item.getBoundingClientRect();
+            const insertAfter = (e.clientY - rect.top) >= (rect.height / 2);
+
+            const currentClip = project.videos[state.currentVideoIndex];
+
+            reorderClips(project, fromIdx, toIdx, insertAfter);
+
+            // 保持当前查看片段
+            const newSelectedIdx = project.videos.indexOf(currentClip);
+            if (newSelectedIdx !== -1) {
+              state.currentVideoIndex = newSelectedIdx;
+            }
+
+            saveCustomProjects();
+            renderSubvideoList();
+            showToast('已更新片段顺序');
+          });
+        }
+      }
 
       els.subvideoListContainer.appendChild(item);
     });
@@ -589,9 +803,11 @@
   function selectProject(projectIndex, videoIndex = 0, isInitial = false) {
     if (!state.projects[projectIndex]) return;
 
+    const project = state.projects[projectIndex];
+    // 片段序号越界 (如从其它作品带来的序号) 时回到第一个片段
+    if (!project.videos || !project.videos[videoIndex]) videoIndex = 0;
     state.currentProjectIndex = projectIndex;
     state.currentVideoIndex = videoIndex;
-    const project = state.projects[projectIndex];
 
     // 更新 URL Hash
     if (history.replaceState) {
@@ -658,7 +874,7 @@
     const video = els.showcaseVideo;
 
     // 实时更新视频下方当前片段的介绍信息
-    renderClipDetails(clip, state.currentVideoIndex, project.videos.length);
+    renderClipDetails(clip);
 
     // 检查是否为 Bilibili 嵌入流 (支持 clip.iframeSrc 或 clip.bvid 或 clip.src 中含有 BV 号)
     const bvid = getBvid(clip);
@@ -703,7 +919,15 @@
     }
 
     // 检查片段是否有视频文件/URL，若为空则显示空白引导层
-    if (!clip.src) {
+    // (blob: 临时地址随页面销毁而失效，持久化后必然打不开，按空地址处理)
+    const isDeadBlob = !!clip.src && clip.src.startsWith('blob:');
+    if (!clip.src || isDeadBlob) {
+      const emptyText = els.videoEmptyState && els.videoEmptyState.querySelector('.empty-text');
+      if (emptyText) {
+        emptyText.textContent = (isDeadBlob && state.isAdmin)
+          ? '视频链接已失效 (临时 blob 地址)，请重新上传'
+          : '当前片段尚未上传视频';
+      }
       video.pause();
       video.removeAttribute('src');
       video.load();
@@ -745,7 +969,7 @@
             els.unmuteBanner.classList.add('hidden');
           }
 
-          // 当前主视频起播成功，触发其余视频同步后台预加载
+          // 当前主视频起播成功，后台预载下一个片段
           preloadRemainingVideos(project);
         })
         .catch(error => {
@@ -773,38 +997,53 @@
   }
 
   // -------------------------------------------------------------
-  // 智能预加载机制: 优先保证当前视频播放，就绪后再同步后台预载其余视频
+  // 智能预加载机制: 当前视频起播后，仅预载「下一个」原生视频片段 (单个隐藏 video，节省流量)
   // -------------------------------------------------------------
   const preloadedVideoUrls = new Set();
+  let preloadGhostVideo = null;
+  let preloadGhostUrl = null;
+  let preloadGhostReady = false;
+
+  // 释放隐藏 video；若尚未加载完成，则允许该地址以后再次被预载
+  function releasePreloadGhost() {
+    if (!preloadGhostVideo) return;
+    if (!preloadGhostReady && preloadGhostUrl) preloadedVideoUrls.delete(preloadGhostUrl);
+    preloadGhostVideo.pause();
+    preloadGhostVideo.removeAttribute('src');
+    preloadGhostVideo.load();
+    preloadGhostVideo = null;
+    preloadGhostUrl = null;
+    preloadGhostReady = false;
+  }
 
   function preloadRemainingVideos(project) {
-    if (!project || !project.videos) return;
+    if (!project || !project.videos || project.videos.length < 2) return;
+    // 用户开启了流量节省模式时不预加载
+    if (navigator.connection && navigator.connection.saveData) return;
 
-    // 筛选出尚未缓存且需要预加载的同项目本地视频
-    const targets = project.videos.filter((c, idx) => {
-      return idx !== state.currentVideoIndex && c.src && !c.bvid && !c.iframeSrc && !preloadedVideoUrls.has(c.src);
-    });
+    const nextClip = project.videos[(state.currentVideoIndex + 1) % project.videos.length];
+    if (!nextClip || !nextClip.src || getBvid(nextClip) || nextClip.iframeSrc) return;
 
-    if (targets.length === 0) return;
+    const url = nextClip.src;
+    if (url.startsWith('blob:') || url.startsWith('data:') || preloadedVideoUrls.has(url)) return;
+    preloadedVideoUrls.add(url);
 
-    console.log(`[智能预加载] 当前视频已就绪，开始同步后台缓存《${project.title}》剩余 ${targets.length} 个视频...`);
+    // 同一时间最多保留一个隐藏 video，先释放上一个
+    releasePreloadGhost();
 
-    targets.forEach(clip => {
-      const url = clip.src;
-      preloadedVideoUrls.add(url);
+    console.log(`[智能预加载] 当前视频已就绪，后台预载《${project.title}》下一个片段: ${url}`);
 
-      // 1. 内存级 Video 元素预解码
-      const ghostVideo = document.createElement('video');
-      ghostVideo.preload = 'auto';
-      ghostVideo.muted = true;
-      ghostVideo.src = url;
-      ghostVideo.load();
-
-      // 2. HTTP 强缓存抓取
-      fetch(url, { cache: 'force-cache' })
-        .then(res => res.blob())
-        .catch(() => {});
-    });
+    const ghost = document.createElement('video');
+    preloadGhostVideo = ghost;
+    preloadGhostUrl = url;
+    preloadGhostReady = false;
+    ghost.addEventListener('canplaythrough', () => {
+      if (preloadGhostVideo === ghost) preloadGhostReady = true;
+    }, { once: true });
+    ghost.preload = 'auto';
+    ghost.muted = true;
+    ghost.src = url;
+    ghost.load();
   }
 
   // -------------------------------------------------------------
@@ -824,16 +1063,7 @@
       }
     }
 
-    // 1. 顶部基础元数据与标题 (Quickshell 通知卡片分栏)
-    if (els.detailCategoryLabel) {
-      els.detailCategoryLabel.textContent = project.category || '独立游戏';
-    }
-    if (els.detailStatusLabel) {
-      els.detailStatusLabel.textContent = project.status || '在研项目';
-    }
-    if (els.detailMetaText) {
-      els.detailMetaText.textContent = `${project.engine || '游戏开发'} · ${project.year || ''}`;
-    }
+    // 1. 标题与副标题
     if (els.detailTitle) {
       els.detailTitle.textContent = project.title;
     }
@@ -850,14 +1080,8 @@
   // -------------------------------------------------------------
   // 视频下方当前片段介绍渲染
   // -------------------------------------------------------------
-  function renderClipDetails(clip, index, total) {
+  function renderClipDetails(clip) {
     if (!clip) return;
-    if (els.clipMetaIndex) {
-      els.clipMetaIndex.textContent = `片段 ${String(index + 1).padStart(2, '0')} / ${String(total).padStart(2, '0')}`;
-    }
-    if (els.clipDurationTag) {
-      els.clipDurationTag.textContent = clip.duration || '--:--';
-    }
     if (els.clipTitle) {
       els.clipTitle.textContent = clip.title || '片段介绍';
     }
@@ -888,11 +1112,15 @@
     video.addEventListener('play', () => updatePlayPauseUI(true));
     video.addEventListener('pause', () => updatePlayPauseUI(false));
 
-    els.restartBtn.addEventListener('click', () => {
-      video.currentTime = 0;
-      video.play();
-      showToast('从头播放');
-    });
+    if (els.nextClipBtn) {
+      els.nextClipBtn.addEventListener('click', () => {
+        const curProject = state.projects[state.currentProjectIndex];
+        if (curProject && curProject.videos && curProject.videos.length > 0) {
+          const nextVIdx = (state.currentVideoIndex + 1) % curProject.videos.length;
+          selectSubvideo(nextVIdx);
+        }
+      });
+    }
 
     video.addEventListener('waiting', () => els.videoSpinner.classList.add('active'));
     video.addEventListener('playing', () => {
@@ -912,13 +1140,7 @@
         const percent = (video.currentTime / video.duration) * 100 || 0;
         els.playedBar.style.width = `${percent}%`;
         els.progressHandle.style.left = `${percent}%`;
-        els.currentTime.textContent = formatTime(video.currentTime);
       }
-    });
-
-    video.addEventListener('loadedmetadata', () => {
-      els.totalDuration.textContent = formatTime(video.duration);
-      els.currentTime.textContent = formatTime(0);
     });
 
     video.addEventListener('progress', () => {
@@ -1025,35 +1247,27 @@
       els.fullscreenLabel.textContent = isFull ? '退出' : '全屏';
     });
 
-    // 本地视频测试
-    els.localVideoPicker.addEventListener('change', (e) => {
-      const file = e.target.files[0];
-      if (file) {
-        const localUrl = URL.createObjectURL(file);
-        video.src = localUrl;
-        video.load();
-        video.play();
-        showToast(`正在播放本地文件: ${file.name}`);
-      }
-    });
-
-    // 空白视频占位区本地视频选择
+    // 空白视频占位区本地视频选择 (上传到 assets/videos/ 后写入当前片段)
     if (els.emptyVideoPicker) {
-      els.emptyVideoPicker.addEventListener('change', (e) => {
+      els.emptyVideoPicker.addEventListener('change', async (e) => {
         const file = e.target.files[0];
-        if (file) {
-          const localUrl = URL.createObjectURL(file);
-          const project = state.projects[state.currentProjectIndex];
-          if (project && project.videos && project.videos[state.currentVideoIndex]) {
-            project.videos[state.currentVideoIndex].src = localUrl;
-            saveCustomProjects();
-          }
-          if (els.videoEmptyState) els.videoEmptyState.style.display = 'none';
-          video.src = localUrl;
-          video.load();
-          video.play();
-          showToast(`已加载本地视频: ${file.name}`);
+        e.target.value = '';
+        const project = state.projects[state.currentProjectIndex];
+        const clip = project && project.videos && project.videos[state.currentVideoIndex];
+        if (!file || !clip) return;
+
+        showToast(`正在上传视频: ${file.name}...`);
+        try {
+          clip.src = await uploadVideoFile(file);
+        } catch (err) {
+          showUploadError(err);
+          return;
         }
+        saveCustomProjects();
+        if (project.videos[state.currentVideoIndex] === clip) {
+          playCurrentSubvideo(false);
+        }
+        showToast(`已上传并保存: ${clip.src}`);
       });
     }
 
@@ -1113,48 +1327,11 @@
       }
     });
 
-    // 复制邮箱
-    if (els.copyEmailQuickBtn) {
-      els.copyEmailQuickBtn.addEventListener('click', () => {
-        navigator.clipboard.writeText('wge66689@gmail.com')
-          .then(() => showToast('邮箱地址已复制到剪贴板'))
-          .catch(() => showToast('复制失败，请手动记录: wge66689@gmail.com'));
-      });
-    }
-
-    // 隐藏暗门：连续快速点击左上角名字/头像 5 次唤起管理员验证
-    let avatarClickCount = 0;
-    let avatarClickTimer = null;
-    if (els.brandLogo) {
-      els.brandLogo.addEventListener('click', (e) => {
-        avatarClickCount++;
-        clearTimeout(avatarClickTimer);
-        avatarClickTimer = setTimeout(() => {
-          avatarClickCount = 0;
-        }, 2200);
-
-        if (avatarClickCount >= 5) {
-          e.preventDefault();
-          avatarClickCount = 0;
-          toggleAdminAuth();
-        }
-      });
-    }
-
-    // 右下角管理员状态指示标签点击 (云端可随时安全退出)
+    // 右下角管理员状态指示标签点击 (仅本地生效)
     if (els.adminStatusIndicator) {
       els.adminStatusIndicator.addEventListener('click', () => {
-        const isLocal = ['localhost', '127.0.0.1', ''].includes(window.location.hostname);
-        if (isLocal) {
-          showToast('当前处于本地开发环境 (始终拥有编辑权限)');
-          return;
-        }
-        if (confirm('确定要退出管理员编辑模式吗？退出后页面将恢复访客纯展示状态。')) {
-          localStorage.removeItem(ADMIN_STORAGE_KEY);
-          state.isAdmin = false;
-          applyAdminState();
-          renderSubvideoList();
-          showToast('已安全退出管理员模式');
+        if (isLocalHost()) {
+          showToast('当前处于 localhost 本地环境 (始终拥有编辑权限，编辑后直接写入本地文件)');
         }
       });
     }
@@ -1164,31 +1341,13 @@
   }
 
   // -------------------------------------------------------------
-  // 切换管理员身份验证弹窗
+  // 切换管理员身份验证 (仅本地有效)
   // -------------------------------------------------------------
   function toggleAdminAuth() {
-    if (state.isAdmin) {
-      const isLocal = ['localhost', '127.0.0.1', ''].includes(window.location.hostname);
-      if (isLocal) {
-        showToast('当前处于本地环境 (始终拥有全权限)');
-        return;
-      }
-      if (confirm('当前已处于管理员编辑模式，是否退出编辑模式？')) {
-        localStorage.removeItem(ADMIN_STORAGE_KEY);
-        state.isAdmin = false;
-        applyAdminState();
-        renderSubvideoList();
-        showToast('已退出管理员模式');
-      }
-    } else {
-      if (els.adminPasswordInput) els.adminPasswordInput.value = '';
-      if (els.adminAuthModal) {
-        els.adminAuthModal.classList.add('active');
-        setTimeout(() => {
-          if (els.adminPasswordInput) els.adminPasswordInput.focus();
-        }, 150);
-      }
+    if (!isLocalHost()) {
+      return;
     }
+    showToast('当前处于 localhost 本地环境 (已具备全部编辑权限)');
   }
 
   // -------------------------------------------------------------
@@ -1196,10 +1355,12 @@
   // -------------------------------------------------------------
   function setupKeyboardShortcuts() {
     window.addEventListener('keydown', (e) => {
-      // 快捷键: Ctrl + Shift + E (或 Cmd + Shift + E) 唤起管理员验证
+      // 快捷键: Ctrl + Shift + E (仅在本地生效)
       if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'E' || e.key === 'e')) {
         e.preventDefault();
-        toggleAdminAuth();
+        if (isLocalHost()) {
+          toggleAdminAuth();
+        }
         return;
       }
 
@@ -1286,7 +1447,6 @@
           break;
         }
         case 'Escape': {
-          if (els.adminAuthModal) els.adminAuthModal.classList.remove('active');
           if (els.clipEditModal) els.clipEditModal.classList.remove('active');
           els.projectModal.classList.remove('active');
           els.shortcutsModal.classList.remove('active');
@@ -1326,122 +1486,18 @@
       addTab.addEventListener('click', () => {
         editingProjectIndex = -1;
         renderModalTabs();
-        loadProjectIntoForm({
-          title: '',
-          category: '独立游戏',
-          subtitle: '',
-          engine: 'Godot 4.x',
-          thumbnail: 'assets/thumbnails/overspace.jpg',
-          controls: '',
-          overview: '',
-          videos: [
-            {
-              id: 'v-' + Date.now(),
-              title: '01. 核心机制演示',
-              desc: '实机演示片段',
-              src: 'assets/videos/overspace-prediction.mp4',
-              duration: '00:30'
-            }
-          ]
-        });
+        loadProjectIntoForm({ title: '', subtitle: '', overview: '' });
       });
       els.modalProjectTabs.appendChild(addTab);
     }
 
-    function createClipRow(clip = {}, index = 0) {
-      const item = document.createElement('div');
-      item.className = 'clip-manager-item';
-
-      item.innerHTML = `
-        <div class="clip-item-row">
-          <input type="text" class="form-input-sm flex-2 clip-input-title" placeholder="片段标题 (如: 01. 机制演示)" value="${clip.title || ''}" required>
-          <input type="text" class="form-input-sm flex-1 clip-input-duration" placeholder="时长 (如 00:25)" value="${clip.duration || '00:20'}">
-          <button type="button" class="clip-delete-btn" title="删除该片段">删除</button>
-        </div>
-        <div class="clip-item-row">
-          <input type="text" class="form-input-sm flex-2 clip-input-src" placeholder="视频路径 (如 assets/videos/demo.mp4)" value="${clip.src || ''}" required>
-          <label class="btn btn-xs btn-outline file-select-label" style="cursor:pointer;" title="选择本地视频文件">
-            <span>浏览文件</span>
-            <input type="file" class="clip-file-picker" accept="video/mp4,video/webm" style="display:none;">
-          </label>
-        </div>
-        <div class="clip-item-row">
-          <input type="text" class="form-input-sm flex-1 clip-input-desc" placeholder="片段设计与机制要点解析说明" value="${clip.desc || ''}">
-        </div>
-      `;
-
-      // 删除片段
-      item.querySelector('.clip-delete-btn').addEventListener('click', () => {
-        if (els.modalClipsList.children.length <= 1) {
-          showToast('作品至少需保留一个视频片段');
-          return;
-        }
-        item.remove();
-        updateClipCount();
-      });
-
-      // 本地文件选取
-      const picker = item.querySelector('.clip-file-picker');
-      const srcInput = item.querySelector('.clip-input-src');
-      picker.addEventListener('change', (e) => {
-        const file = e.target.files[0];
-        if (file) {
-          srcInput.value = URL.createObjectURL(file);
-          showToast(`已加载本地视频: ${file.name}`);
-        }
-      });
-
-      return item;
-    }
-
-    function updateClipCount() {
-      if (els.modalClipCount && els.modalClipsList) {
-        els.modalClipCount.textContent = els.modalClipsList.children.length;
-      }
-    }
-
     function loadProjectIntoForm(proj) {
-      document.getElementById('formTitle').value = proj.title || '';
-      document.getElementById('formCategory').value = proj.category || '独立游戏';
-      document.getElementById('formSubtitle').value = proj.subtitle || '';
-      document.getElementById('formEngine').value = proj.engine || '';
-      document.getElementById('formThumbUrl').value = proj.thumbnail || '';
-      const formIconUrl = document.getElementById('formIconUrl');
-      if (formIconUrl) formIconUrl.value = proj.icon || '';
-      document.getElementById('formControls').value = proj.controls || '';
-      document.getElementById('formOverview').value = proj.overview || '';
-
-      const formThumbPreview = document.getElementById('formThumbPreview');
-      if (formThumbPreview) {
-        if (proj.thumbnail) {
-          formThumbPreview.src = proj.thumbnail;
-          formThumbPreview.style.display = 'block';
-        } else {
-          formThumbPreview.style.display = 'none';
-        }
-      }
-      const formIconPreview = document.getElementById('formIconPreview');
-      if (formIconPreview) {
-        if (proj.icon && !proj.icon.startsWith('<svg')) {
-          formIconPreview.src = proj.icon;
-          formIconPreview.style.display = 'block';
-        } else {
-          formIconPreview.style.display = 'none';
-        }
-      }
-
-      els.modalClipsList.innerHTML = '';
-      const vids = proj.videos && proj.videos.length > 0 ? proj.videos : [
-        { title: '01. 实机演示', duration: '00:30', src: '', desc: '' }
-      ];
-      vids.forEach((v, i) => {
-        els.modalClipsList.appendChild(createClipRow(v, i));
-      });
-      updateClipCount();
-
-      if (els.deleteProjectBtn) {
-        els.deleteProjectBtn.style.display = (editingProjectIndex >= 0 && state.projects.length > 1) ? 'inline-block' : 'none';
-      }
+      const fTitle = document.getElementById('formTitle');
+      const fSubtitle = document.getElementById('formSubtitle');
+      const fOverview = document.getElementById('formOverview');
+      if (fTitle) fTitle.value = proj.title || '';
+      if (fSubtitle) fSubtitle.value = proj.subtitle || '';
+      if (fOverview) fOverview.value = proj.overview || '';
     }
 
     // 打开项目信息编辑模态框
@@ -1454,12 +1510,6 @@
 
     if (els.editProjectBtn) {
       els.editProjectBtn.addEventListener('click', () => {
-        openProjectModal(state.currentProjectIndex);
-      });
-    }
-
-    if (els.manageProjectsBtn) {
-      els.manageProjectsBtn.addEventListener('click', () => {
         openProjectModal(state.currentProjectIndex);
       });
     }
@@ -1478,71 +1528,21 @@
       }
     });
 
-    // 监听海报与图标路径输入框实时预览
-    const formThumbInput = document.getElementById('formThumbUrl');
-    const formThumbPreview = document.getElementById('formThumbPreview');
-    if (formThumbInput && formThumbPreview) {
-      formThumbInput.addEventListener('input', () => {
-        const val = formThumbInput.value.trim();
-        if (val) {
-          formThumbPreview.src = val;
-          formThumbPreview.style.display = 'block';
-        } else {
-          formThumbPreview.style.display = 'none';
-        }
-      });
-      formThumbPreview.onerror = () => {
-        formThumbPreview.style.display = 'none';
-      };
-    }
-
-    const formIconInput = document.getElementById('formIconUrl');
-    const formIconPreview = document.getElementById('formIconPreview');
-    if (formIconInput && formIconPreview) {
-      formIconInput.addEventListener('input', () => {
-        const val = formIconInput.value.trim();
-        if (val) {
-          formIconPreview.src = val;
-          formIconPreview.style.display = 'block';
-        } else {
-          formIconPreview.style.display = 'none';
-        }
-      });
-      formIconPreview.onerror = () => {
-        formIconPreview.style.display = 'none';
-      };
-    }
-
-    // 表单中本地海报图片选择 (压缩转换为 DataURL 持久存储)
-    if (els.formThumbFilePicker) {
-      els.formThumbFilePicker.addEventListener('change', async (e) => {
-        const file = e.target.files[0];
-        if (file) {
-          showToast('正在处理海报图片...');
-          const dataUrl = await fileToDataUrl(file);
-          if (formThumbInput) formThumbInput.value = dataUrl;
-          if (formThumbPreview) {
-            formThumbPreview.src = dataUrl;
-            formThumbPreview.style.display = 'block';
-          }
-          showToast(`已选择海报: ${file.name}`);
-        }
+    // 快捷键指南模态框：关闭按钮、确认按钮、点击背景关闭
+    if (els.closeShortcutsModalBtn) {
+      els.closeShortcutsModalBtn.addEventListener('click', () => {
+        els.shortcutsModal.classList.remove('active');
       });
     }
-
-    // 表单中本地图标图片选择
-    if (els.formIconFilePicker) {
-      els.formIconFilePicker.addEventListener('change', async (e) => {
-        const file = e.target.files[0];
-        if (file) {
-          showToast('正在处理图标图片...');
-          const dataUrl = await fileToDataUrl(file, 200, 200);
-          if (formIconInput) formIconInput.value = dataUrl;
-          if (formIconPreview) {
-            formIconPreview.src = dataUrl;
-            formIconPreview.style.display = 'block';
-          }
-          showToast(`已选择图标: ${file.name}`);
+    if (els.confirmShortcutsBtn) {
+      els.confirmShortcutsBtn.addEventListener('click', () => {
+        els.shortcutsModal.classList.remove('active');
+      });
+    }
+    if (els.shortcutsModal) {
+      els.shortcutsModal.addEventListener('click', (e) => {
+        if (e.target === els.shortcutsModal) {
+          els.shortcutsModal.classList.remove('active');
         }
       });
     }
@@ -1590,14 +1590,23 @@
       });
     }
 
-    // 片段模态框内本地视频文件选择
+    // 片段模态框内本地视频文件选择 (上传完成前禁用保存，避免存入旧路径)
     if (els.clipModalFilePicker) {
-      els.clipModalFilePicker.addEventListener('change', (e) => {
+      els.clipModalFilePicker.addEventListener('change', async (e) => {
         const file = e.target.files[0];
-        if (file) {
-          const objUrl = URL.createObjectURL(file);
-          if (els.clipFormSrc) els.clipFormSrc.value = objUrl;
-          showToast(`已选择本地视频: ${file.name}`);
+        e.target.value = '';
+        if (!file) return;
+
+        if (els.saveClipBtn) els.saveClipBtn.disabled = true;
+        showToast(`正在上传视频: ${file.name}...`);
+        try {
+          const src = await uploadVideoFile(file);
+          if (els.clipFormSrc) els.clipFormSrc.value = src;
+          showToast(`已上传至 ${src}，点击「保存修改」生效`);
+        } catch (err) {
+          showUploadError(err);
+        } finally {
+          if (els.saveClipBtn) els.saveClipBtn.disabled = false;
         }
       });
     }
@@ -1643,11 +1652,15 @@
         clip.src = els.clipFormSrc.value.trim();
         clip.desc = els.clipFormDesc.value.trim();
 
+        // iframeSrc 里固定了旧视频的 aid/cid，且播放时优先于 src，
+        // 来源换成本地视频或其它 BV 号时必须一并清除
         const detectedBvid = extractBvid(clip.src);
         if (detectedBvid) {
+          if (detectedBvid !== clip.bvid) delete clip.iframeSrc;
           clip.bvid = detectedBvid;
         } else {
           delete clip.bvid;
+          delete clip.iframeSrc;
         }
 
         saveCustomProjects();
@@ -1658,92 +1671,34 @@
       });
     }
 
-    // 添加片段按钮
-    if (els.modalAddClipBtn) {
-      els.modalAddClipBtn.addEventListener('click', () => {
-        const nextIdx = els.modalClipsList.children.length + 1;
-        const newClip = {
-          title: `0${nextIdx}. 机制特性演示`,
-          duration: '00:25',
-          src: '',
-          desc: ''
-        };
-        els.modalClipsList.appendChild(createClipRow(newClip, nextIdx));
-        updateClipCount();
-      });
-    }
-
-    // 删除当前作品
-    if (els.deleteProjectBtn) {
-      els.deleteProjectBtn.addEventListener('click', () => {
-        if (state.projects.length <= 1) {
-          showToast('作品集至少需保留一个作品');
-          return;
-        }
-        const curProj = state.projects[editingProjectIndex];
-        if (confirm(`确定要删除作品《${curProj.title}》吗？`)) {
-          state.projects.splice(editingProjectIndex, 1);
-          saveCustomProjects();
-          renderTopProjectStrip();
-          selectProject(0, 0);
-          els.projectModal.classList.remove('active');
-          showToast('已删除作品');
-        }
-      });
-    }
-
     // 保存提交
     els.projectForm.addEventListener('submit', (e) => {
       e.preventDefault();
 
-      const title = document.getElementById('formTitle').value.trim();
-      const category = document.getElementById('formCategory').value.trim() || '独立游戏';
-      const subtitle = document.getElementById('formSubtitle').value.trim();
-      const engine = document.getElementById('formEngine').value.trim();
-      const thumbnail = document.getElementById('formThumbUrl').value.trim() || 'assets/thumbnails/overspace.jpg';
-      const iconUrl = document.getElementById('formIconUrl') ? document.getElementById('formIconUrl').value.trim() : '';
-      const icon = iconUrl || thumbnail;
-      const controls = document.getElementById('formControls').value.trim();
-      const overview = document.getElementById('formOverview').value.trim();
+      const fTitle = document.getElementById('formTitle');
+      const fSubtitle = document.getElementById('formSubtitle');
+      const fOverview = document.getElementById('formOverview');
+      const title = fTitle ? fTitle.value.trim() : '';
+      const subtitle = fSubtitle ? fSubtitle.value.trim() : '';
+      const overview = fOverview ? fOverview.value.trim() : '';
 
-      // 提取片段列表
-      const clips = [];
-      const clipItems = els.modalClipsList.querySelectorAll('.clip-manager-item');
-      clipItems.forEach((item, idx) => {
-        const cTitle = item.querySelector('.clip-input-title').value.trim() || `0${idx + 1}. 机制演示`;
-        const cDuration = item.querySelector('.clip-input-duration').value.trim() || '00:30';
-        const cSrc = item.querySelector('.clip-input-src').value.trim();
-        const cDesc = item.querySelector('.clip-input-desc').value.trim();
-        clips.push({
-          id: `clip-${Date.now()}-${idx}`,
-          title: cTitle,
-          duration: cDuration,
-          src: cSrc,
-          desc: cDesc
-        });
-      });
-
-      if (clips.length === 0) {
-        showToast('请至少添加一个视频片段');
+      if (!title) {
+        showToast('作品名称不能为空');
         return;
       }
 
       if (editingProjectIndex >= 0 && state.projects[editingProjectIndex]) {
-        // 编辑已有作品
+        // 编辑已有作品：只更新名称、副标题、介绍，完好保留已有视频片段与海报
         const targetProj = state.projects[editingProjectIndex];
         targetProj.title = title;
-        targetProj.category = category;
         targetProj.subtitle = subtitle;
-        targetProj.engine = engine;
-        targetProj.thumbnail = thumbnail;
-        targetProj.icon = icon;
-        targetProj.controls = controls;
         targetProj.overview = overview;
-        targetProj.videos = clips;
 
         saveCustomProjects();
         renderTopProjectStrip();
-        selectProject(editingProjectIndex, 0);
+        // 仅在编辑当前作品时保留片段序号，否则该序号属于之前查看的作品
+        const keepIdx = editingProjectIndex === state.currentProjectIndex ? state.currentVideoIndex : 0;
+        selectProject(editingProjectIndex, keepIdx);
         els.projectModal.classList.remove('active');
         showToast(`已更新作品《${title}》`);
       } else {
@@ -1751,17 +1706,25 @@
         const newProj = {
           id: `proj-${Date.now()}`,
           title,
-          category,
+          category: '独立游戏',
           subtitle,
-          engine,
-          year: '2025',
+          engine: '',
+          year: new Date().getFullYear().toString(),
           status: '独立开发',
           role: '游戏系统策划 / 关卡设计',
-          thumbnail,
-          icon,
-          controls,
+          thumbnail: 'assets/thumbnails/overspace.jpg',
+          icon: 'assets/thumbnails/overspace.jpg',
+          controls: '',
           overview,
-          videos: clips,
+          videos: [
+            {
+              id: `clip-${Date.now()}-0`,
+              title: '01. 核心演示',
+              desc: '暂无片段解析说明。点击右侧「编辑」可设置视频与机制说明。',
+              src: '',
+              duration: '00:00'
+            }
+          ],
           links: {}
         };
         state.projects.push(newProj);
@@ -1772,74 +1735,6 @@
         showToast(`已添加新作品《${title}》`);
       }
     });
-
-    // 导出配置
-    els.exportDataBtn.addEventListener('click', () => {
-      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(state.projects, null, 2));
-      const downloadAnchor = document.createElement('a');
-      downloadAnchor.setAttribute("href", dataStr);
-      downloadAnchor.setAttribute("download", "projects.json");
-      document.body.appendChild(downloadAnchor);
-      downloadAnchor.click();
-      downloadAnchor.remove();
-      showToast('已导出 projects.json 配置文件');
-    });
-
-    // 恢复默认
-    els.resetDataBtn.addEventListener('click', () => {
-      if (confirm('确定要清除所有自定义修改并恢复默认作品集吗？')) {
-        localStorage.removeItem('portfolio_projects_custom');
-        localStorage.removeItem('portfolio_data_version');
-        loadProjectsData();
-        normalizeProjectsData();
-        renderTopProjectStrip();
-        selectProject(0, 0);
-        els.projectModal.classList.remove('active');
-        showToast('已恢复默认作品集');
-      }
-    });
-
-    // =========================================================
-    // 模态框 4: 管理员身份验证
-    // =========================================================
-    if (els.closeAdminModalBtn) {
-      els.closeAdminModalBtn.addEventListener('click', () => {
-        els.adminAuthModal.classList.remove('active');
-      });
-    }
-
-    if (els.cancelAdminBtn) {
-      els.cancelAdminBtn.addEventListener('click', () => {
-        els.adminAuthModal.classList.remove('active');
-      });
-    }
-
-    if (els.adminAuthModal) {
-      els.adminAuthModal.addEventListener('click', (e) => {
-        if (e.target === els.adminAuthModal) {
-          els.adminAuthModal.classList.remove('active');
-        }
-      });
-    }
-
-    if (els.adminAuthForm) {
-      els.adminAuthForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const pwd = els.adminPasswordInput.value.trim();
-        if (pwd === ADMIN_PASSWORD) {
-          localStorage.setItem(ADMIN_STORAGE_KEY, 'true');
-          state.isAdmin = true;
-          applyAdminState();
-          renderSubvideoList();
-          els.adminAuthModal.classList.remove('active');
-          showToast('验证通过！已开启管理员编辑模式');
-        } else {
-          showToast('密码错误，请重新输入');
-          els.adminPasswordInput.value = '';
-          els.adminPasswordInput.focus();
-        }
-      });
-    }
   }
 
   // -------------------------------------------------------------

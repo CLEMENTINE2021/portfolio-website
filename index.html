@@ -6,7 +6,7 @@
   <title>葛文轩 (Wenxuan Ge) | 游戏设计作品集</title>
   <meta name="description" content="葛文轩的个人作品集网站 - 游戏系统策划、关卡设计与物理机制研发。上方横排选择作品，右侧选择视频片段，展示视频与关键设计说明。">
   <!-- Styles (采用系统原生高品质字体栈，零阻塞秒开) -->
-  <link rel="stylesheet" href="css/style.css?v=20261028_10">
+  <link rel="stylesheet" href="css/style.css?v=20261028_14">
 </head>
 <body class="theme-dark">
   <!-- 《OVERSPACE》专属深空星空背景 Canvas -->
@@ -16,23 +16,7 @@
     <!-- 顶部全局导航栏 -->
     <header class="app-header">
       <div class="header-left">
-        <a href="#" class="brand-badge" id="brandLogo">
-          <div class="avatar-glow">
-            <span class="avatar-text">葛</span>
-          </div>
-          <div class="brand-info">
-            <h1 class="brand-name">葛文轩 <span class="brand-en">WENXUAN GE</span></h1>
-            <p class="brand-title">游戏系统策划 · 关卡设计</p>
-          </div>
-        </a>
-      </div>
-
-      <!-- 快捷全局功能 -->
-      <div class="header-right">
-        <div class="social-links">
-          <a href="https://kineticplanet.itch.io" target="_blank" rel="noopener" class="social-text-link">itch.io</a>
-          <a href="mailto:wge66689@gmail.com" class="social-text-link">联系邮箱</a>
-        </div>
+        <h1 class="simple-brand-title">葛文轩作品集</h1>
       </div>
     </header>
 
@@ -164,7 +148,7 @@
               <div class="video-empty-content">
                 <div class="empty-icon">🎬</div>
                 <p class="empty-text">当前片段尚未上传视频</p>
-                <label class="btn btn-primary btn-sm file-select-label" style="cursor:pointer;" title="选择本地视频文件">
+                <label class="btn btn-primary btn-sm file-select-label admin-only" style="cursor:pointer;" title="选择本地视频文件">
                   <span>上传视频</span>
                   <input type="file" id="emptyVideoPicker" accept="video/mp4,video/webm" style="display:none;">
                 </label>
@@ -187,14 +171,9 @@
                   <button class="ctrl-btn text-ctrl-btn" id="playPauseBtn" title="播放 / 暂停 (空格键)">
                     <span id="playPauseBtnIcon">暂停</span>
                   </button>
-                  <button class="ctrl-btn text-ctrl-btn" id="restartBtn" title="重新从头播放">
-                    <span>重播</span>
+                  <button class="ctrl-btn text-ctrl-btn" id="nextClipBtn" title="切换到下一个视频 (↓ 键)">
+                    <span>下一个视频</span>
                   </button>
-                  <div class="time-display">
-                    <span id="currentTime">00:00</span>
-                    <span class="time-sep">/</span>
-                    <span id="totalDuration">00:00</span>
-                  </div>
                 </div>
 
                 <div class="controls-right">
@@ -205,12 +184,6 @@
                     </button>
                     <input type="range" class="volume-slider" id="volumeSlider" min="0" max="1" step="0.05" value="0" title="调整音量">
                   </div>
-
-                  <!-- 本地视频测试 -->
-                  <label class="ctrl-btn text-ctrl-btn file-select-label" title="选择本地视频快速测试此作品">
-                    <span>本地视频</span>
-                    <input type="file" id="localVideoPicker" accept="video/mp4,video/webm" style="display:none">
-                  </label>
 
                   <!-- 全屏按钮 -->
                   <button class="ctrl-btn text-ctrl-btn" id="fullscreenBtn" title="全屏查看视频 (F 键)">
@@ -225,11 +198,11 @@
     </main>
   </div>
 
-  <!-- 模态框 1: 管理作品数据 -->
+  <!-- 模态框 1: 管理作品数据 (精简后聚焦核心展示项) -->
   <div class="modal-backdrop" id="projectModal" aria-hidden="true">
-    <div class="modal-dialog modal-large">
+    <div class="modal-dialog">
       <div class="modal-header">
-        <h3 class="modal-title" id="projectModalTitle">管理作品数据</h3>
+        <h3 class="modal-title" id="projectModalTitle">编辑作品信息</h3>
         <button class="modal-close-btn" id="closeProjectModalBtn">✕</button>
       </div>
 
@@ -239,93 +212,24 @@
       </div>
 
       <form class="modal-form" id="projectForm">
-        <!-- 基础信息行 1 -->
-        <div class="form-row">
-          <div class="form-group flex-2">
-            <label for="formTitle">作品名称 *</label>
-            <input type="text" id="formTitle" required placeholder="例如: 《OVERSPACE》">
-          </div>
-          <div class="form-group flex-1">
-            <label for="formCategory">所属类别</label>
-            <input type="text" id="formCategory" placeholder="例如: 独立游戏 / 物理模拟">
-          </div>
+        <div class="form-group">
+          <label for="formTitle">作品名称 *</label>
+          <input type="text" id="formTitle" required placeholder="例如: OVERSPACE">
         </div>
 
-        <!-- 基础信息行 2 -->
-        <div class="form-row">
-          <div class="form-group flex-2">
-            <label for="formSubtitle">副标题 / 特色概括</label>
-            <input type="text" id="formSubtitle" placeholder="例如: 2D 太空物理模拟与战术飞行独立游戏">
-          </div>
-          <div class="form-group flex-1">
-            <label for="formEngine">核心引擎 / 语言</label>
-            <input type="text" id="formEngine" placeholder="例如: Godot 4.x / GDScript">
-          </div>
+        <div class="form-group">
+          <label for="formSubtitle">副标题 / 特色概括</label>
+          <input type="text" id="formSubtitle" placeholder="例如: 围绕物理的战斗与解谜">
         </div>
 
-        <!-- 封面海报、图标与操作说明 -->
-        <div class="form-row">
-          <div class="form-group flex-1">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-              <label for="formThumbUrl" style="margin-bottom: 0;">海报 / 封面图路径</label>
-              <img id="formThumbPreview" src="" alt="海报预览" style="width: 26px; height: 26px; object-fit: cover; border-radius: 4px; display: none; border: 1px solid rgba(255,255,255,0.25);">
-            </div>
-            <div class="form-input-with-action">
-              <input type="text" id="formThumbUrl" placeholder="例如: assets/thumbnails/overspace.jpg 或点击右侧上传">
-              <label class="btn btn-secondary btn-sm file-select-label" style="cursor:pointer;" title="选择本地海报图片">
-                <span>上传海报</span>
-                <input type="file" id="formThumbFilePicker" accept="image/*" style="display:none;">
-              </label>
-            </div>
-          </div>
-          <div class="form-group flex-1">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-              <label for="formIconUrl" style="margin-bottom: 0;">自定义图标路径 (图片/SVG)</label>
-              <img id="formIconPreview" src="" alt="图标预览" style="width: 26px; height: 26px; object-fit: cover; border-radius: 4px; display: none; border: 1px solid rgba(255,255,255,0.25);">
-            </div>
-            <div class="form-input-with-action">
-              <input type="text" id="formIconUrl" placeholder="例如: assets/thumbnails/icon.png 或留空">
-              <label class="btn btn-secondary btn-sm file-select-label" style="cursor:pointer;" title="选择本地图标图片">
-                <span>上传图标</span>
-                <input type="file" id="formIconFilePicker" accept="image/*" style="display:none;">
-              </label>
-            </div>
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="form-group flex-1">
-            <label for="formControls">操作说明</label>
-            <input type="text" id="formControls" placeholder="例如: 【WASD】推进机动 | 【鼠标】瞄准...">
-          </div>
-        </div>
-
-        <!-- 详细设计概述 -->
         <div class="form-group">
           <label for="formOverview">详细介绍与设计概述 *</label>
-          <textarea id="formOverview" rows="3" required placeholder="介绍作品的设计背景、核心机制与体验目标..."></textarea>
+          <textarea id="formOverview" rows="5" required placeholder="介绍作品的设计背景、核心机制与体验目标..."></textarea>
         </div>
 
-        <!-- 视频片段管理区域 (列表展示与实时编辑) -->
-        <div class="form-group">
-          <div class="clips-manager-header">
-            <label>视频片段列表 (<span id="modalClipCount">0</span> 个片段)</label>
-            <button type="button" class="btn btn-xs btn-outline" id="modalAddClipBtn">+ 添加片段</button>
-          </div>
-          <div class="clips-manager-list" id="modalClipsList">
-            <!-- 动态生成各个视频片段项 -->
-          </div>
-        </div>
-
-        <div class="modal-footer">
-          <div class="footer-left-actions">
-            <button type="button" class="btn btn-secondary" id="exportDataBtn">导出配置</button>
-            <button type="button" class="btn btn-danger" id="resetDataBtn">恢复默认</button>
-            <button type="button" class="btn btn-danger" id="deleteProjectBtn" style="display:none;">删除作品</button>
-          </div>
-          <div class="footer-right-actions">
-            <button type="button" class="btn btn-secondary" id="cancelFormBtn">取消</button>
-            <button type="submit" class="btn btn-primary" id="saveProjectBtn">保存生效</button>
-          </div>
+        <div class="modal-footer justify-end">
+          <button type="button" class="btn btn-secondary" id="cancelFormBtn">取消</button>
+          <button type="submit" class="btn btn-primary" id="saveProjectBtn">保存修改</button>
         </div>
       </form>
     </div>
@@ -379,26 +283,6 @@
     </div>
   </div>
 
-  <!-- 模态框: 管理员身份验证 -->
-  <div class="modal-backdrop" id="adminAuthModal" aria-hidden="true">
-    <div class="modal-dialog modal-small">
-      <div class="modal-header">
-        <h3 class="modal-title">管理员模式验证</h3>
-        <button class="modal-close-btn" id="closeAdminModalBtn">✕</button>
-      </div>
-      <form class="modal-form" id="adminAuthForm">
-        <div class="form-group">
-          <label for="adminPasswordInput">请输入管理密码</label>
-          <input type="password" id="adminPasswordInput" placeholder="输入密码以解锁编辑权限" autocomplete="current-password" required>
-        </div>
-        <div class="modal-footer justify-end">
-          <button type="button" class="btn btn-secondary" id="cancelAdminBtn">取消</button>
-          <button type="submit" class="btn btn-primary" id="confirmAdminBtn">解锁编辑</button>
-        </div>
-      </form>
-    </div>
-  </div>
-
   <!-- 模态框 2: 键盘快捷键指南 -->
   <div class="modal-backdrop" id="shortcutsModal" aria-hidden="true">
     <div class="modal-dialog modal-small">
@@ -442,17 +326,17 @@
     </div>
   </div>
 
-  <!-- 管理员模式状态指示器 (仅管理员激活时显示，点击可退出) -->
-  <div class="admin-status-indicator admin-only" id="adminStatusIndicator" title="点击退出管理员编辑模式">
-    <span class="indicator-dot">●</span> 管理员编辑模式 (点击退出)
+  <!-- 管理员模式状态指示器 (仅本地环境显示) -->
+  <div class="admin-status-indicator admin-only" id="adminStatusIndicator" title="本地编辑模式：修改会直接写入 js/projects.js">
+    <span class="indicator-dot">●</span> 本地编辑模式 (实时写入文件)
   </div>
 
   <!-- 轻量全局 Toast 提示容器 -->
   <div class="toast-container" id="toastContainer" aria-live="polite"></div>
 
   <!-- Scripts -->
-  <script src="js/projects.js?v=20261028_08"></script>
-  <script src="js/space-theme.js?v=20261028_08"></script>
-  <script src="js/app.js?v=20261028_08"></script>
+  <script src="js/projects.js?v=20261028_14"></script>
+  <script src="js/space-theme.js?v=20261028_14"></script>
+  <script src="js/app.js?v=20261028_14"></script>
 </body>
 </html>

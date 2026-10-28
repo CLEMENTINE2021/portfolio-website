@@ -126,6 +126,15 @@ body {
   border-bottom: 1px solid var(--border-subtle);
 }
 
+.simple-brand-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 0.5px;
+  margin: 0;
+  font-family: var(--font-sans);
+}
+
 .brand-badge {
   display: flex;
   align-items: center;
@@ -1206,6 +1215,83 @@ body.is-admin-mode .project-poster-side:hover .poster-edit-overlay.admin-only {
   background: rgba(255, 255, 255, 0.14);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
+}
+
+/* 片段拖拽排序手柄 (三条杠) - 仅在管理员模式下可见 */
+.clip-drag-handle {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 3px;
+  width: 22px;
+  height: 38px;
+  margin-right: 8px;
+  cursor: grab;
+  color: var(--text-muted);
+  opacity: 0.65;
+  flex-shrink: 0;
+  padding: 4px 2px;
+  border-radius: var(--radius-sm);
+  transition: opacity 0.15s ease, background 0.15s ease, color 0.15s ease;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-user-drag: element;
+  touch-action: none;
+}
+
+.clip-drag-handle:hover {
+  opacity: 1;
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.clip-drag-handle:active {
+  cursor: grabbing;
+}
+
+.clip-drag-handle .drag-bar {
+  display: block;
+  width: 14px;
+  height: 2px;
+  background: currentColor;
+  border-radius: 1px;
+  pointer-events: none;
+}
+
+body.is-admin-mode .clip-drag-handle.admin-only {
+  display: flex !important;
+}
+
+/* 拖拽状态与放置指示条 */
+.subvideo-item-card.dragging {
+  opacity: 0.35 !important;
+  background: rgba(255, 255, 255, 0.05) !important;
+}
+
+.subvideo-item-card.drag-over-top {
+  border-top: 2px solid #ffffff !important;
+}
+
+.subvideo-item-card.drag-over-bottom {
+  border-bottom: 2px solid #ffffff !important;
+}
+
+/* 模态框内片段上下排序微调按钮 */
+.clip-move-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-muted);
+  border-radius: var(--radius-sm);
+  padding: 2px 7px;
+  font-size: 0.72rem;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+.clip-move-btn:hover {
+  background: rgba(255, 255, 255, 0.16);
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.5);
 }
 
 /* 标题外层与两行自适应大字号 (纯白高亮，去除任何侧边竖线) */
