@@ -99,7 +99,7 @@ const DEFAULT_PROJECTS = [
     videos: [
       {
         id: "hostage-v1",
-        title: "01. 类幽浮2关卡设计完整实机演示",
+        title: "关卡完整实机通关演示",
         desc: "基于 Godot 4.7 开发的 XCOM 风格战术回合制战棋关卡。从初始隐蔽渗透、破门解救人质到登顶固守阻击三波增援并成功撤离的完整实机通关录像（3分54秒）。",
         src: "assets/videos/hostage-full.mp4",
         bvid: "BV1pon16WEuu",
