@@ -220,7 +220,7 @@
     setupKeyboardShortcuts();
   }
 
-  const DATA_VERSION = 'v5_20261028_overspace_local_hostage_bili';
+  const DATA_VERSION = 'v6_20261028_smart_preload';
 
   // -------------------------------------------------------------
   // 工具函数: 提取与检测 Bilibili BV 号
@@ -744,6 +744,9 @@
           } else {
             els.unmuteBanner.classList.add('hidden');
           }
+
+          // 当前主视频起播成功，触发其余视频同步后台预加载
+          preloadRemainingVideos(project);
         })
         .catch(error => {
           console.warn('自动播放策略受限:', error.name, error.message);
@@ -757,6 +760,7 @@
               .then(() => {
                 updatePlayPauseUI(true);
                 els.unmuteBanner.classList.remove('hidden');
+                preloadRemainingVideos(project);
               })
               .catch(() => {
                 updatePlayPauseUI(false);
@@ -766,6 +770,41 @@
           }
         });
     }
+  }
+
+  // -------------------------------------------------------------
+  // 智能预加载机制: 优先保证当前视频播放，就绪后再同步后台预载其余视频
+  // -------------------------------------------------------------
+  const preloadedVideoUrls = new Set();
+
+  function preloadRemainingVideos(project) {
+    if (!project || !project.videos) return;
+
+    // 筛选出尚未缓存且需要预加载的同项目本地视频
+    const targets = project.videos.filter((c, idx) => {
+      return idx !== state.currentVideoIndex && c.src && !c.bvid && !c.iframeSrc && !preloadedVideoUrls.has(c.src);
+    });
+
+    if (targets.length === 0) return;
+
+    console.log(`[智能预加载] 当前视频已就绪，开始同步后台缓存《${project.title}》剩余 ${targets.length} 个视频...`);
+
+    targets.forEach(clip => {
+      const url = clip.src;
+      preloadedVideoUrls.add(url);
+
+      // 1. 内存级 Video 元素预解码
+      const ghostVideo = document.createElement('video');
+      ghostVideo.preload = 'auto';
+      ghostVideo.muted = true;
+      ghostVideo.src = url;
+      ghostVideo.load();
+
+      // 2. HTTP 强缓存抓取
+      fetch(url, { cache: 'force-cache' })
+        .then(res => res.blob())
+        .catch(() => {});
+    });
   }
 
   // -------------------------------------------------------------
@@ -856,8 +895,17 @@
     });
 
     video.addEventListener('waiting', () => els.videoSpinner.classList.add('active'));
-    video.addEventListener('playing', () => els.videoSpinner.classList.remove('active'));
+    video.addEventListener('playing', () => {
+      els.videoSpinner.classList.remove('active');
+      const curProject = state.projects[state.currentProjectIndex];
+      if (curProject) preloadRemainingVideos(curProject);
+    });
     video.addEventListener('canplay', () => els.videoSpinner.classList.remove('active'));
+    video.addEventListener('canplaythrough', () => {
+      els.videoSpinner.classList.remove('active');
+      const curProject = state.projects[state.currentProjectIndex];
+      if (curProject) preloadRemainingVideos(curProject);
+    });
 
     video.addEventListener('timeupdate', () => {
       if (!state.isDraggingProgress) {
