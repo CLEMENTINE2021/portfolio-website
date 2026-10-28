@@ -6,7 +6,7 @@
   <title>葛文轩 (Wenxuan Ge) | 游戏设计作品集</title>
   <meta name="description" content="葛文轩的个人作品集网站 - 游戏系统策划、关卡设计与物理机制研发。上方横排选择作品，右侧选择视频片段，展示视频与关键设计说明。">
   <!-- Styles (采用系统原生高品质字体栈，零阻塞秒开) -->
-  <link rel="stylesheet" href="css/style.css?v=20261028_14">
+  <link rel="stylesheet" href="css/style.css?v=20261028_15">
 </head>
 <body class="theme-dark">
   <!-- 《OVERSPACE》专属深空星空背景 Canvas -->
@@ -118,6 +118,9 @@
               allow="autoplay; fullscreen"
             ></iframe>
 
+            <!-- 图片片段展示 (src 为图片扩展名时显示，替代 video) -->
+            <img id="showcaseImage" class="showcase-image" alt="" style="display:none;">
+
             <!-- 拖放自定义视频提示遮罩 -->
             <div class="drag-drop-overlay" id="dragDropOverlay">
               <div class="drag-drop-content">
@@ -147,10 +150,10 @@
             <div class="video-empty-state" id="videoEmptyState" style="display:none;">
               <div class="video-empty-content">
                 <div class="empty-icon">🎬</div>
-                <p class="empty-text">当前片段尚未上传视频</p>
+                <p class="empty-text">当前片段尚未上传视频或图片</p>
                 <label class="btn btn-primary btn-sm file-select-label admin-only" style="cursor:pointer;" title="选择本地视频文件">
-                  <span>上传视频</span>
-                  <input type="file" id="emptyVideoPicker" accept="video/mp4,video/webm" style="display:none;">
+                  <span>上传视频 / 图片</span>
+                  <input type="file" id="emptyVideoPicker" accept="video/mp4,video/webm,image/jpeg,image/png,image/webp,image/gif,image/avif" style="display:none;">
                 </label>
               </div>
             </div>
@@ -255,12 +258,12 @@
         </div>
 
         <div class="form-group">
-          <label for="clipFormSrc">视频来源 / 文件</label>
+          <label for="clipFormSrc">视频 / 图片来源</label>
           <div class="form-input-with-action">
-            <input type="text" id="clipFormSrc" placeholder="输入视频文件相对路径、网络 URL 或点击右侧上传">
+            <input type="text" id="clipFormSrc" placeholder="输入视频 / 图片的相对路径、网络 URL 或点击右侧上传">
             <label class="btn btn-secondary btn-sm file-select-label" style="cursor:pointer;" title="选择本地视频文件">
-              <span>上传视频</span>
-              <input type="file" id="clipModalFilePicker" accept="video/mp4,video/webm" style="display:none;">
+              <span>上传视频 / 图片</span>
+              <input type="file" id="clipModalFilePicker" accept="video/mp4,video/webm,image/jpeg,image/png,image/webp,image/gif,image/avif" style="display:none;">
             </label>
           </div>
         </div>
@@ -335,8 +338,8 @@
   <div class="toast-container" id="toastContainer" aria-live="polite"></div>
 
   <!-- Scripts -->
-  <script src="js/projects.js?v=20261028_14"></script>
-  <script src="js/space-theme.js?v=20261028_14"></script>
-  <script src="js/app.js?v=20261028_14"></script>
+  <script src="js/projects.js?v=20261028_15"></script>
+  <script src="js/space-theme.js?v=20261028_15"></script>
+  <script src="js/app.js?v=20261028_15"></script>
 </body>
 </html>

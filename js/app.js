@@ -39,6 +39,7 @@
     videoPlayerBox: document.getElementById('videoPlayerBox'),
     showcaseVideo: document.getElementById('showcaseVideo'),
     showcaseIframe: document.getElementById('showcaseIframe'),
+    showcaseImage: document.getElementById('showcaseImage'),
     dragDropOverlay: document.getElementById('dragDropOverlay'),
     videoSpinner: document.getElementById('videoSpinner'),
     unmuteBanner: document.getElementById('unmuteBanner'),
@@ -206,6 +207,11 @@
     }[ch]));
   }
 
+  // 片段来源为图片 (按扩展名判断，忽略查询串)：以图片展示，而不是视频播放器
+  function isImageSrc(src) {
+    return !!src && /\.(jpe?g|png|webp|gif|avif)(\?.*)?$/i.test(src);
+  }
+
   // -------------------------------------------------------------
   // 数据存取与格式规范化
   // -------------------------------------------------------------
@@ -365,12 +371,12 @@
   }
 
   // -------------------------------------------------------------
-  // 工具函数: 上传本地视频到 server.py，落地为 assets/videos/ 下的真实文件
+  // 工具函数: 上传本地视频 / 图片到 server.py，落地为 assets/videos/ 或 assets/images/ 下的真实文件
   // (blob: 临时地址刷新即失效，也无法随网站部署，因此不再写入数据)
   // -------------------------------------------------------------
   const PAGES_FILE_LIMIT = 25 * 1024 * 1024; // Cloudflare Pages 单文件上限 25 MiB
 
-  async function uploadVideoFile(file) {
+  async function uploadMediaFile(file) {
     const response = await fetch(`/api/upload-video?name=${encodeURIComponent(file.name)}`, {
       method: 'POST',
       headers: { 'Content-Type': file.type || 'application/octet-stream' },
@@ -390,8 +396,8 @@
   }
 
   function showUploadError(err) {
-    console.error('视频上传失败', err);
-    showToast(`视频上传失败 (${err.message})，请确认通过 ./start.sh 启动了 server.py`);
+    console.error('上传失败', err);
+    showToast(`上传失败 (${err.message})，请确认通过 ./start.sh 启动了 server.py`);
   }
 
   // -------------------------------------------------------------
@@ -876,6 +882,9 @@
     // 实时更新视频下方当前片段的介绍信息
     renderClipDetails(clip);
 
+    // 默认隐藏图片，仅图片片段时再显示
+    if (els.showcaseImage) els.showcaseImage.style.display = 'none';
+
     // 检查是否为 Bilibili 嵌入流 (支持 clip.iframeSrc 或 clip.bvid 或 clip.src 中含有 BV 号)
     const bvid = getBvid(clip);
     if (clip.iframeSrc || bvid) {
@@ -906,6 +915,25 @@
       return;
     }
 
+    // 图片片段：隐藏 video / iframe / 播放控制条，直接展示图片
+    if (isImageSrc(clip.src) && els.showcaseImage) {
+      if (els.showcaseIframe) {
+        els.showcaseIframe.style.display = 'none';
+        els.showcaseIframe.src = '';
+      }
+      video.pause();
+      video.style.display = 'none';
+      if (els.customControls) els.customControls.style.display = 'none';
+      els.videoSpinner.classList.remove('active');
+      if (els.unmuteBanner) els.unmuteBanner.classList.add('hidden');
+      if (els.videoEmptyState) els.videoEmptyState.style.display = 'none';
+      els.showcaseImage.alt = clip.title || '';
+      els.showcaseImage.src = clip.src;
+      els.showcaseImage.style.display = 'block';
+      updatePlayPauseUI(false);
+      return;
+    }
+
     // 切换回原生 HTML5 Video 播放模式
     if (els.showcaseIframe) {
       els.showcaseIframe.style.display = 'none';
@@ -926,7 +954,7 @@
       if (emptyText) {
         emptyText.textContent = (isDeadBlob && state.isAdmin)
           ? '视频链接已失效 (临时 blob 地址)，请重新上传'
-          : '当前片段尚未上传视频';
+          : '当前片段尚未上传视频或图片';
       }
       video.pause();
       video.removeAttribute('src');
@@ -1025,7 +1053,7 @@
     if (!nextClip || !nextClip.src || getBvid(nextClip) || nextClip.iframeSrc) return;
 
     const url = nextClip.src;
-    if (url.startsWith('blob:') || url.startsWith('data:') || preloadedVideoUrls.has(url)) return;
+    if (url.startsWith('blob:') || url.startsWith('data:') || isImageSrc(url) || preloadedVideoUrls.has(url)) return;
     preloadedVideoUrls.add(url);
 
     // 同一时间最多保留一个隐藏 video，先释放上一个
@@ -1095,6 +1123,17 @@
   // -------------------------------------------------------------
   function setupEventListeners() {
     const video = els.showcaseVideo;
+
+    // 图片加载失败时回到空白占位层，避免显示一片黑
+    if (els.showcaseImage) {
+      els.showcaseImage.addEventListener('error', () => {
+        if (els.showcaseImage.style.display === 'none') return;
+        els.showcaseImage.style.display = 'none';
+        const emptyText = els.videoEmptyState && els.videoEmptyState.querySelector('.empty-text');
+        if (emptyText) emptyText.textContent = '图片加载失败，请检查文件路径';
+        if (els.videoEmptyState) els.videoEmptyState.style.display = 'flex';
+      });
+    }
 
     function togglePlayPause() {
       if (video.paused || video.ended) {
@@ -1258,7 +1297,7 @@
 
         showToast(`正在上传视频: ${file.name}...`);
         try {
-          clip.src = await uploadVideoFile(file);
+          clip.src = await uploadMediaFile(file);
         } catch (err) {
           showUploadError(err);
           return;
@@ -1600,7 +1639,7 @@
         if (els.saveClipBtn) els.saveClipBtn.disabled = true;
         showToast(`正在上传视频: ${file.name}...`);
         try {
-          const src = await uploadVideoFile(file);
+          const src = await uploadMediaFile(file);
           if (els.clipFormSrc) els.clipFormSrc.value = src;
           showToast(`已上传至 ${src}，点击「保存修改」生效`);
         } catch (err) {

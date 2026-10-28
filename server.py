@@ -12,7 +12,8 @@ server.py
   直接将网页端编辑的数据写入本地 js/projects.js 文件 (加锁 + 原子替换)
   自动将上传的海报与图标 Base64 存储为本地真实图片文件 (assets/thumbnails/...)
 - API: POST /api/upload-video?name=<文件名>
-  请求体为视频文件原始字节，保存到 assets/videos/ 并返回相对路径
+  请求体为文件原始字节：视频 (.mp4/.webm) 保存到 assets/videos/，图片 (.jpg/.png/.webp/.gif/.avif)
+  保存到 assets/images/，返回相对路径
 安全：
 - 服务监听所有网卡，局域网内的设备（如手机）可以只读浏览网站 (GET / HEAD)
 - 写入类 API (POST) 仅接受来自本机的同源请求：
@@ -37,6 +38,7 @@ import urllib.parse
 PORT = 8000
 DIRECTORY = os.path.dirname(os.path.abspath(__file__))
 ALLOWED_VIDEO_EXTS = {'.mp4', '.webm'}
+ALLOWED_UPLOAD_IMAGE_EXTS = {'.jpg', '.jpeg', '.png', '.webp', '.gif', '.avif'}  # 片段展示用图片 (不含 svg，避免直接打开时执行脚本)
 ALLOWED_IMAGE_EXTS = {'jpg', 'png', 'webp', 'gif'}
 UPLOAD_CHUNK_SIZE = 1024 * 1024
 RANGE_CHUNK_SIZE = 64 * 1024
@@ -60,11 +62,11 @@ def reserve_video_file(target_dir, raw_name):
     name = os.path.basename(raw_name.replace('\\', '/'))
     stem, ext = os.path.splitext(name)
     ext = ext.lower()
-    if ext not in ALLOWED_VIDEO_EXTS:
+    if ext not in ALLOWED_VIDEO_EXTS and ext not in ALLOWED_UPLOAD_IMAGE_EXTS:
         return None
     stem = re.sub(r'[^\w\-]+', '_', stem).strip('_')
     # 按字节截断并丢弃末尾被切断的半个字符
-    stem = stem.encode('utf-8')[:MAX_STEM_BYTES].decode('utf-8', 'ignore').strip('_') or 'video'
+    stem = stem.encode('utf-8')[:MAX_STEM_BYTES].decode('utf-8', 'ignore').strip('_') or 'media'
     with UPLOAD_NAME_LOCK:
         candidate = f"{stem}{ext}"
         n = 1
@@ -316,7 +318,7 @@ class PortfolioHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
     # ---------- 写入 API ----------
 
     def handle_upload_video(self, query):
-        """将请求体中的视频分块写入 assets/videos/，先写临时文件，完整后再改名"""
+        """将请求体中的视频 / 图片分块写入 assets/videos/ 或 assets/images/，先写临时文件，完整后再改名"""
         raw_name = urllib.parse.parse_qs(query).get('name', [''])[0]
         content_length = self.read_content_length(MAX_UPLOAD_SIZE)
         if content_length is None:
@@ -325,7 +327,9 @@ class PortfolioHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
             self.send_json(400, {"success": False, "error": "上传内容为空"})
             return
 
-        videos_dir = os.path.join(DIRECTORY, 'assets', 'videos')
+        ext = os.path.splitext(raw_name)[1].lower()
+        subdir = 'images' if ext in ALLOWED_UPLOAD_IMAGE_EXTS else 'videos'
+        videos_dir = os.path.join(DIRECTORY, 'assets', subdir)
         try:
             os.makedirs(videos_dir, exist_ok=True)
             reserved = reserve_video_file(videos_dir, raw_name)
@@ -335,7 +339,7 @@ class PortfolioHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
             self.send_json(500, {"success": False, "error": f"无法创建上传文件: {e.strerror or e}"})
             return
         if not reserved:
-            self.send_json(400, {"success": False, "error": "仅支持 MP4 / WebM 视频文件"})
+            self.send_json(400, {"success": False, "error": "仅支持 MP4 / WebM 视频或 JPG / PNG / WebP / GIF / AVIF 图片"})
             return
 
         filename, f = reserved
@@ -355,13 +359,13 @@ class PortfolioHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
         except Exception as e:
             if os.path.exists(tmp_path):
                 os.remove(tmp_path)
-            print(f"[API Error] 视频上传失败: {e}")
+            print(f"[API Error] 上传失败: {e}")
             self.send_json(500, {"success": False, "error": str(e)})
             return
 
-        src = f"assets/videos/{filename}"
+        src = f"assets/{subdir}/{filename}"
         self.send_json(200, {"success": True, "src": src, "size": content_length})
-        print(f"[API] 已保存上传视频 {src} ({content_length / 1024 / 1024:.1f} MiB)")
+        print(f"[API] 已保存上传文件 {src} ({content_length / 1024 / 1024:.1f} MiB)")
 
     def handle_save_projects(self):
         content_length = self.read_content_length(MAX_JSON_BODY)
