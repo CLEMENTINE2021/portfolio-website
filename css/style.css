@@ -580,14 +580,14 @@ body.is-admin-mode .project-poster-side:hover .poster-edit-overlay.admin-only {
   background: rgba(255, 255, 255, 0.45);
 }
 
-/* 视频播放器外层 (嵌入在片段解析卡片内，无缝分栏) */
+/* 视频播放器外层 (嵌入在片段解析卡片内，无缝分栏，置于标题正文下方) */
 .video-showcase-wrapper {
   position: relative;
   width: 100%;
   border-radius: 0;
   overflow: hidden;
-  border-top: none;
-  border-bottom: 1px solid var(--border-subtle);
+  border-top: 1px solid var(--border-subtle);
+  border-bottom: none;
 }
 
 .ambient-canvas {

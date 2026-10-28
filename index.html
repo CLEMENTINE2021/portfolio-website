@@ -6,7 +6,7 @@
   <title>葛文轩 (Wenxuan Ge) | 游戏设计作品集</title>
   <meta name="description" content="葛文轩的个人作品集网站 - 游戏系统策划、关卡设计与物理机制研发。上方横排选择作品，右侧选择视频片段，展示视频与关键设计说明。">
   <!-- Styles (采用系统原生高品质字体栈，零阻塞秒开) -->
-  <link rel="stylesheet" href="css/style.css?v=20261028_08">
+  <link rel="stylesheet" href="css/style.css?v=20261028_09">
 </head>
 <body class="theme-dark">
   <!-- 《OVERSPACE》专属深空星空背景 Canvas -->
@@ -95,7 +95,17 @@
 
       <!-- 下方：包含视频播放与片段解析的一体化卡片 -->
       <article class="clip-detail-card" id="clipDetailCard">
-        <!-- 视频播放器舞台 (无缝内嵌于卡片内) -->
+        <!-- 卡片上方：当前片段的详细解析说明 (标题与正文) -->
+        <div class="card-body-area">
+          <div class="card-title-row">
+            <h3 class="clip-title" id="clipTitle">片段标题加载中...</h3>
+            <button class="card-edit-btn admin-only" id="editClipBtn" title="编辑当前片段">编辑</button>
+          </div>
+          <div class="card-body-divider"></div>
+          <p class="clip-desc" id="clipDesc">片段介绍加载中...</p>
+        </div>
+
+        <!-- 视频播放器舞台 (无缝内嵌于卡片内，置于标题正文下方) -->
         <div class="video-showcase-wrapper" id="videoWrapper">
           <div class="video-player-box" id="videoPlayerBox">
             <video 
@@ -210,16 +220,6 @@
               </div>
             </div>
           </div>
-        </div>
-
-        <!-- 卡片下方：当前片段的详细解析说明 -->
-        <div class="card-body-area">
-          <div class="card-title-row">
-            <h3 class="clip-title" id="clipTitle">片段标题加载中...</h3>
-            <button class="card-edit-btn admin-only" id="editClipBtn" title="编辑当前片段">编辑</button>
-          </div>
-          <div class="card-body-divider"></div>
-          <p class="clip-desc" id="clipDesc">片段介绍加载中...</p>
         </div>
       </article>
     </main>
