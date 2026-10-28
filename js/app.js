@@ -220,7 +220,7 @@
     setupKeyboardShortcuts();
   }
 
-  const DATA_VERSION = 'v4_20261028_bilibili_stream';
+  const DATA_VERSION = 'v5_20261028_overspace_local_hostage_bili';
 
   // -------------------------------------------------------------
   // 工具函数: 提取与检测 Bilibili BV 号
@@ -660,9 +660,9 @@
     // 实时更新视频下方当前片段的介绍信息
     renderClipDetails(clip, state.currentVideoIndex, project.videos.length);
 
-    // 检查是否为 Bilibili 嵌入流 (支持 clip.bvid 或 clip.src 中含有 BV 号)
+    // 检查是否为 Bilibili 嵌入流 (支持 clip.iframeSrc 或 clip.bvid 或 clip.src 中含有 BV 号)
     const bvid = getBvid(clip);
-    if (bvid) {
+    if (clip.iframeSrc || bvid) {
       if (video) {
         video.pause();
         video.style.display = 'none';
@@ -674,7 +674,15 @@
 
       if (els.showcaseIframe) {
         els.showcaseIframe.style.display = 'block';
-        const targetSrc = `https://player.bilibili.com/player.html?isOutside=true&bvid=${bvid}&page=1&autoplay=1&danmaku=0&high_quality=1`;
+        let targetSrc = '';
+        if (clip.iframeSrc) {
+          targetSrc = clip.iframeSrc.startsWith('//') ? ('https:' + clip.iframeSrc) : clip.iframeSrc;
+          if (!targetSrc.includes('autoplay=')) targetSrc += '&autoplay=1';
+          if (!targetSrc.includes('danmaku=')) targetSrc += '&danmaku=0';
+          if (!targetSrc.includes('high_quality=')) targetSrc += '&high_quality=1';
+        } else {
+          targetSrc = `https://player.bilibili.com/player.html?isOutside=true&bvid=${bvid}&page=1&autoplay=1&danmaku=0&high_quality=1`;
+        }
         if (els.showcaseIframe.src !== targetSrc) {
           els.showcaseIframe.src = targetSrc;
         }

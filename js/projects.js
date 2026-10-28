@@ -21,7 +21,6 @@ const DEFAULT_PROJECTS = [
         title: "01. 轨道预测与引力弹弓变轨机制",
         desc: "根据飞船质量、推进矢量与多体引力场实时动态积分求解预测轨道，并在 HUD 呈现预测轨迹线；利用天体引力弹弓实现零工质加速与大角度战术变轨。",
         src: "assets/videos/overspace-prediction.mp4",
-        bvid: "BV1pPx769E1J",
         duration: "00:24"
       },
       {
@@ -29,7 +28,6 @@ const DEFAULT_PROJECTS = [
         title: "02. 武器后坐力与模块化废弃弹出",
         desc: "射击冲量实时反作用于飞船质心导致姿态偏转与动量反冲；限制单体武器弹药上限，耗尽即自动废弃弹出，促使高速交火中拾取战术补给。",
         src: "assets/videos/overspace-weapon.mp4",
-        bvid: "BV1APx76REBC",
         duration: "00:14"
       },
       {
@@ -37,7 +35,6 @@ const DEFAULT_PROJECTS = [
         title: "03. 基础敌人巡逻警戒与索敌追击",
         desc: "基于微重力失重环境设计的自主巡逻无人机；视锥索敌后动态施加转向力矩与推进矢量，模拟物理惯性追逐与走位缠斗。",
         src: "assets/videos/overspace-enemies.mp4",
-        bvid: "BV1WPx769EGR",
         duration: "00:48"
       },
       {
@@ -45,7 +42,6 @@ const DEFAULT_PROJECTS = [
         title: "04. 精英敌人牵引交互与战术博弈",
         desc: "配备高威胁近战牵引光束的精英无人机；被牵引时需利用反冲力反推或借助环境掩体切断光束，构建高压拉扯对抗。",
         src: "assets/videos/overspace-elite.mp4",
-        bvid: "BV1kPx769E2U",
         duration: "00:29"
       },
       {
@@ -53,7 +49,6 @@ const DEFAULT_PROJECTS = [
         title: "05. 狙击关卡视线遮挡与掩体机动",
         desc: "高精度红外狙击无人机关卡设计；玩家必须结合巨型空间站骨架柱体掩体进行视线遮挡盲区推进，在致命射击间隙切入盲区反打。",
         src: "assets/videos/overspace-sniper.mp4",
-        bvid: "BV1pPx769EUb",
         duration: "00:56"
       },
       {
@@ -61,7 +56,6 @@ const DEFAULT_PROJECTS = [
         title: "06. 猎手敌人暗区潜伏与动态照明",
         desc: "完全隐匿在无光深空暗区的潜伏型猎手敌人；依靠飞船探照灯有限扇形视野与雷达告警指示探照定位，带来高压惊悚与突袭反制体验。",
         src: "assets/videos/overspace-hunter.mp4",
-        bvid: "BV1kPx769E1e",
         duration: "00:31"
       }
     ],
@@ -105,38 +99,12 @@ const DEFAULT_PROJECTS = [
     videos: [
       {
         id: "hostage-v1",
-        title: "01. 隐蔽渗透与巡逻警戒机制",
-        desc: "全队处于隐蔽状态，规划最优行动动线避开敌人 4 格探测警戒圈；利用门体交互无声开门，避免推门暴露全队。",
-        src: "assets/videos/hostage-stealth.mp4",
-        duration: "00:36"
-      },
-      {
-        id: "hostage-v2",
-        title: "02. 突入交火与看守处决倒计时",
-        desc: "惊动看守触发人质受挟持告警；必须在敌方回合到来前单回合消灭所有挟持者。利用越肩射击点爆油桶与手雷高爆发瞬间歼敌。",
-        src: "assets/videos/hostage-breach.mp4",
-        duration: "00:47"
-      },
-      {
-        id: "hostage-v3",
-        title: "03. 立体高地转移与波次援军阻击",
-        desc: "人质加入小队并跟随移动；利用外墙梯子登顶抢占屋顶高地，依托半掩体与全掩体构筑交叉火力，阻击由外围刷新的三波精锐增援。",
-        src: "assets/videos/hostage-defense.mp4",
-        duration: "00:55"
-      },
-      {
-        id: "hostage-v4",
-        title: "04. 撤离点集结与全员成功脱离",
-        desc: "3 回合坚守倒计时结束，屋顶中心降下绿色撤离区域；全队与获救人质悉数踩入撤离点，完成关卡目标并触发胜利结算。",
-        src: "assets/videos/hostage-extraction.mp4",
-        duration: "00:30"
-      },
-      {
-        id: "hostage-v5",
-        title: "05. 关卡完整实机通关演示",
-        desc: "从初始隐蔽渗透、破门解救人质到登顶固守撤离的完整 17 回合实机通关录像（3分53秒）。",
+        title: "01. 类幽浮2关卡设计完整实机演示",
+        desc: "基于 Godot 4.7 开发的 XCOM 风格战术回合制战棋关卡。从初始隐蔽渗透、破门解救人质到登顶固守阻击三波增援并成功撤离的完整实机通关录像（3分54秒）。",
         src: "assets/videos/hostage-full.mp4",
-        duration: "03:53"
+        bvid: "BV1pon16WEuu",
+        iframeSrc: "https://player.bilibili.com/player.html?isOutside=true&aid=117482824140776&bvid=BV1pon16WEuu&cid=42946924020&p=1",
+        duration: "03:54"
       }
     ],
     links: {
