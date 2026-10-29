@@ -170,7 +170,8 @@
     setupKeyboardShortcuts();
 
     if (restoredFromCache) {
-      showToast('检测到上次未写入 js/projects.js 的修改，已从浏览器缓存恢复，下次保存时会写入文件');
+      showToast('检测到上次未写入 js/projects.js 的修改，已从浏览器缓存恢复，正在尝试写入文件');
+      syncProjectsToServer();
     }
   }
 
@@ -261,12 +262,65 @@
   // 同步串行化：服务器是多线程的，并发 POST 可能乱序落盘导致旧快照覆盖新数据
   let syncChain = Promise.resolve();
 
-  function notifySyncFailed() {
-    showToast('⚠️ 未能写入 js/projects.js（请用 ./start.sh 启动 server.py），修改已暂存在浏览器中');
+  // 服务器是否处于"同步失败"状态：此时修改只存在浏览器缓存里，用常驻横幅提醒 (toast 2 秒就消失，容易错过)
+  let syncFailed = false;
+  let retryTimer = null;
+
+  function hasUnsyncedChanges() {
+    try {
+      return localStorage.getItem(UNSYNCED_KEY) === '1';
+    } catch (e) {
+      return false;
+    }
   }
 
+  function updateSyncBanner() {
+    let banner = document.getElementById('syncFailBanner');
+    if (!syncFailed || !state.isAdmin) {
+      if (banner) banner.remove();
+      return;
+    }
+    if (!banner) {
+      banner = document.createElement('div');
+      banner.id = 'syncFailBanner';
+      banner.className = 'sync-fail-banner';
+      banner.setAttribute('role', 'alert');
+      banner.innerHTML = '<span>⚠️ 与服务器断开：最近的修改<b>没有写入 js/projects.js</b>，只暂存在本浏览器中。请重新运行 ./start.sh，连上后会自动重试；在此之前不要清理浏览器数据。</span>' +
+        '<button type="button" id="syncRetryBtn">立即重试</button>';
+      document.body.appendChild(banner);
+      banner.querySelector('#syncRetryBtn').addEventListener('click', () => syncProjectsToServer());
+    }
+  }
+
+  function notifySyncFailed(silent) {
+    syncFailed = true;
+    updateSyncBanner();
+    // 断线期间每 5 秒自动重试一次，服务器恢复后自动补写
+    if (!retryTimer) {
+      retryTimer = setInterval(() => {
+        if (!hasUnsyncedChanges()) {
+          clearInterval(retryTimer);
+          retryTimer = null;
+          return;
+        }
+        syncProjectsToServer(true);
+      }, 5000);
+    }
+    if (!silent) {
+      showToast('⚠️ 未能写入 js/projects.js（请用 ./start.sh 启动 server.py），修改已暂存在浏览器中');
+    }
+  }
+
+  // 离开页面前，若还有未写入文件的修改则让浏览器弹确认框
+  window.addEventListener('beforeunload', (e) => {
+    if (state.isAdmin && hasUnsyncedChanges() && syncFailed) {
+      e.preventDefault();
+      e.returnValue = '';
+    }
+  });
+
   // 实际执行一次同步 (开始时才序列化 state.projects，保证发送最新状态；绝不 reject，避免链条卡死)
-  async function doSync() {
+  async function doSync(silent) {
     const seqAtStart = saveSeq;
     try {
       const response = await fetch('/api/save-projects', {
@@ -298,18 +352,21 @@
               localStorage.removeItem(UNSYNCED_KEY);
             } catch (e) {}
           }
-          showToast('💾 已同步修改本地 js/projects.js 文件！');
+          const recovered = syncFailed;
+          syncFailed = false;
+          updateSyncBanner();
+          showToast(recovered ? '✅ 服务器已恢复，缓存的修改已写入 js/projects.js' : '💾 已同步修改本地 js/projects.js 文件！');
           return;
         }
       }
-      notifySyncFailed();
+      notifySyncFailed(silent);
     } catch (e) {
-      notifySyncFailed();
+      notifySyncFailed(silent);
     }
   }
 
-  function syncProjectsToServer() {
-    syncChain = syncChain.then(doSync);
+  function syncProjectsToServer(silent) {
+    syncChain = syncChain.then(() => doSync(silent === true));
     return syncChain;
   }
 
