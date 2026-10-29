@@ -24,6 +24,7 @@ server.py
 """
 
 import base64
+import hashlib
 import http.server
 import ipaddress
 import json
@@ -110,6 +111,15 @@ def safe_project_id(raw_id, idx):
     """作品 id 来自客户端，只保留 [A-Za-z0-9_-]，防止路径穿越；为空则回退 proj_N"""
     safe = re.sub(r'[^A-Za-z0-9_-]+', '_', str(raw_id or '')).strip('_')[:64]
     return safe or f"proj_{idx + 1}"
+
+
+def projects_rev():
+    """js/projects.js 当前内容的哈希，作为数据版本号；文件不存在返回空串"""
+    try:
+        with open(os.path.join(DIRECTORY, 'js', 'projects.js'), 'rb') as f:
+            return hashlib.sha1(f.read()).hexdigest()
+    except OSError:
+        return ''
 
 
 def write_file_atomic(path, content):
@@ -252,6 +262,9 @@ class PortfolioHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
 
     def do_GET(self):
         try:
+            if urllib.parse.urlsplit(self.path).path == '/api/projects-rev':
+                self.send_json(200, {"rev": projects_rev()})
+                return
             if not self.serve_range(True):
                 super().do_GET()
         except CONNECTION_ERRORS:
@@ -384,6 +397,13 @@ class PortfolioHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
 
         try:
             with SAVE_LOCK:
+                # 乐观并发控制：客户端基于哪个版本编辑的，必须与磁盘上当前版本一致，
+                # 否则说明页面数据已过期 (旧标签页 / 文件被其它方式改过)，拒绝写入以免整体覆盖较新的内容
+                base_rev = self.headers.get('X-Base-Rev')
+                if base_rev is not None and base_rev != projects_rev():
+                    self.send_json(409, {"success": False, "conflict": True,
+                                         "error": "js/projects.js 已被更新，当前页面数据已过期"})
+                    return
                 thumbs_dir = os.path.join(DIRECTORY, 'assets', 'thumbnails')
 
                 # 处理其中的 Base64 图片，落地为本地图片文件
@@ -436,7 +456,8 @@ window.PORTFOLIO_DATA = {{
             self.send_json(200, {
                 "success": True,
                 "message": "已成功写入本地 js/projects.js 文件！",
-                "updatedProjects": projects
+                "updatedProjects": projects,
+                "rev": projects_rev()
             })
             print(f"[API] 成功保存 {len(projects)} 个作品到 js/projects.js")
         except CONNECTION_ERRORS:

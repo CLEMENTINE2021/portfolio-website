@@ -153,7 +153,9 @@
   // -------------------------------------------------------------
   function init() {
     checkAdminAuth();
+    startHeartbeat();
     loadProjectsData();
+    initBaseRev();
     normalizeProjectsData();
     renderTopProjectStrip();
 
@@ -274,22 +276,92 @@
     }
   }
 
+  // 乐观并发控制：记录本页面数据基于 js/projects.js 的哪个版本。
+  // 保存时带上该版本号，服务器发现文件已被更新 (旧标签页 / 缓存 / git 操作) 就拒绝写入，避免整体覆盖较新的内容
+  const BASE_REV_KEY = 'portfolio_base_rev';
+  let baseRev = null;
+  let baseRevPromise = Promise.resolve();
+  let conflict = false;
+
+  async function fetchBaseRev() {
+    try {
+      const r = await fetch('/api/projects-rev', { cache: 'no-store' });
+      if (r.ok) baseRev = (await r.json()).rev;
+    } catch (e) {}
+  }
+
+  function initBaseRev() {
+    if (!state.isAdmin) return;
+    let stored = null;
+    try {
+      stored = localStorage.getItem(BASE_REV_KEY);
+    } catch (e) {}
+    // 从浏览器缓存恢复的数据是基于缓存当时的版本编辑的，必须沿用当时的版本号
+    if (restoredFromCache && stored) {
+      baseRev = stored;
+    } else {
+      baseRevPromise = fetchBaseRev();
+    }
+  }
+
+  function downloadMyEdits() {
+    const blob = new Blob([JSON.stringify(state.projects, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `my_unsaved_edits_${Date.now()}.json`;
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  }
+
+  function discardAndReload() {
+    if (!confirm('将丢弃本页尚未写入文件的修改并加载最新数据，确定吗？(建议先下载我的修改)')) return;
+    try {
+      localStorage.removeItem('portfolio_projects_custom');
+      localStorage.removeItem(UNSYNCED_KEY);
+      localStorage.removeItem(BASE_REV_KEY);
+    } catch (e) {}
+    location.reload();
+  }
+
+  // 遮罩：断线 / 数据过期时阻止继续编辑
   function updateSyncBanner() {
+    const mode = !state.isAdmin ? '' : conflict ? 'conflict' : syncFailed ? 'offline' : '';
     let banner = document.getElementById('syncFailBanner');
-    if (!syncFailed || !state.isAdmin) {
-      if (banner) banner.remove();
-      return;
+    if (banner && banner.dataset.mode !== mode) {
+      banner.remove();
+      banner = null;
     }
-    if (!banner) {
-      banner = document.createElement('div');
-      banner.id = 'syncFailBanner';
-      banner.className = 'sync-fail-banner';
-      banner.setAttribute('role', 'alert');
-      banner.innerHTML = '<span>⚠️ 与服务器断开：最近的修改<b>没有写入 js/projects.js</b>，只暂存在本浏览器中。请重新运行 ./start.sh，连上后会自动重试；在此之前不要清理浏览器数据。</span>' +
-        '<button type="button" id="syncRetryBtn">立即重试</button>';
+    if (!mode || banner) return;
+    banner = document.createElement('div');
+    banner.id = 'syncFailBanner';
+    banner.dataset.mode = mode;
+    banner.className = 'sync-fail-banner';
+    banner.setAttribute('role', 'alert');
+    if (mode === 'conflict') {
+      banner.innerHTML = '<div class="sync-fail-box"><p>⚠️ 页面数据已过期，已暂停编辑</p>' +
+        '<p>js/projects.js 在你打开本页之后被更新过 (其它标签页、git 操作或手动修改)。继续保存会覆盖较新的内容，所以本页的修改没有写入。</p>' +
+        '<button type="button" id="downloadEditsBtn">下载我的修改 (JSON)</button> ' +
+        '<button type="button" id="discardReloadBtn">放弃本页修改并刷新</button></div>';
       document.body.appendChild(banner);
-      banner.querySelector('#syncRetryBtn').addEventListener('click', () => syncProjectsToServer());
+      banner.querySelector('#downloadEditsBtn').addEventListener('click', downloadMyEdits);
+      banner.querySelector('#discardReloadBtn').addEventListener('click', discardAndReload);
+    } else {
+      banner.innerHTML = '<div class="sync-fail-box"><p>⚠️ 与服务器断开，已暂停编辑</p>' +
+        '<p>无法写入 js/projects.js，此时的任何修改都不会被保存。请重新运行 ./start.sh，连上后会自动恢复。</p>' +
+        '<button type="button" id="syncRetryBtn">立即重试</button></div>';
+      document.body.appendChild(banner);
+      banner.querySelector('#syncRetryBtn').addEventListener('click', checkServer);
     }
+  }
+
+  function showConflict() {
+    conflict = true;
+    syncFailed = false;
+    if (retryTimer) {
+      clearInterval(retryTimer);
+      retryTimer = null;
+    }
+    updateSyncBanner();
   }
 
   function notifySyncFailed(silent) {
@@ -311,9 +383,36 @@
     }
   }
 
+  // 心跳：每 3 秒探测服务器，断线时弹出遮罩阻止编辑，恢复后自动解除
+  async function checkServer() {
+    if (conflict) return;
+    let online = false;
+    try {
+      const ctrl = new AbortController();
+      const timer = setTimeout(() => ctrl.abort(), 2000);
+      const r = await fetch('/', { method: 'HEAD', cache: 'no-store', signal: ctrl.signal });
+      clearTimeout(timer);
+      online = r.ok;
+    } catch (e) {}
+    if (!online) {
+      if (!syncFailed) notifySyncFailed(true);
+    } else if (syncFailed) {
+      if (hasUnsyncedChanges()) {
+        syncProjectsToServer();
+      } else {
+        syncFailed = false;
+        updateSyncBanner();
+      }
+    }
+  }
+
+  function startHeartbeat() {
+    if (state.isAdmin) setInterval(checkServer, 3000);
+  }
+
   // 离开页面前，若还有未写入文件的修改则让浏览器弹确认框
   window.addEventListener('beforeunload', (e) => {
-    if (state.isAdmin && hasUnsyncedChanges() && syncFailed) {
+    if (state.isAdmin && hasUnsyncedChanges() && (syncFailed || conflict)) {
       e.preventDefault();
       e.returnValue = '';
     }
@@ -321,18 +420,31 @@
 
   // 实际执行一次同步 (开始时才序列化 state.projects，保证发送最新状态；绝不 reject，避免链条卡死)
   async function doSync(silent) {
+    if (conflict) return;
     const seqAtStart = saveSeq;
     try {
+      await baseRevPromise;
+      if (baseRev === null) await fetchBaseRev();
+      if (baseRev === null) {
+        notifySyncFailed(silent);
+        return;
+      }
       const response = await fetch('/api/save-projects', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'X-Base-Rev': baseRev
         },
         body: JSON.stringify(state.projects)
       });
+      if (response.status === 409) {
+        showConflict();
+        return;
+      }
       if (response.ok) {
         const res = await response.json();
         if (res.success) {
+          if (res.rev) baseRev = res.rev;
           if (res.updatedProjects) {
             // 只回填服务器落地后的图片路径，不替换 state.projects，
             // 否则已渲染列表的事件闭包和进行中的编辑会指向旧对象，修改被静默丢弃
@@ -371,8 +483,13 @@
   }
 
   function saveCustomProjects() {
+    if (syncFailed || conflict) {
+      showToast(conflict ? '⚠️ 页面数据已过期，无法保存' : '⚠️ 服务器已断开，无法保存');
+      return;
+    }
     saveSeq++;
     try {
+      if (baseRev) localStorage.setItem(BASE_REV_KEY, baseRev);
       localStorage.setItem('portfolio_data_version', DATA_VERSION);
       localStorage.setItem('portfolio_projects_custom', JSON.stringify(state.projects));
       localStorage.setItem(UNSYNCED_KEY, '1');

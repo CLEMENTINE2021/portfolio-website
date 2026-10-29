@@ -40,7 +40,7 @@ const DEFAULT_PROJECTS = [
       },
       {
         "id": "overspace-v6",
-        "title": "06. 猎人关卡设计",
+        "title": "猎人关卡设计",
         "desc": "该关卡布置了一种敌人名为hunter,它未继承任何npc。它是一种无意识的怪物，力量极大，但怕光。接触到玩家即可杀死玩家。速度极快，当玩家暴露在他的直接视线内一定时间后，他就会以极高的速度接近玩家。因此玩家必须间歇使用此前拾取的手电筒照射它，并在压力之下逃出生天。此关卡旨在让玩家熟悉物理枪的特性。（关卡最后会让玩家用物理枪强行掰开损坏的大门）",
         "src": "assets/videos/overspace-hunter.mp4",
         "duration": "00:31"
@@ -95,7 +95,7 @@ const DEFAULT_PROJECTS = [
   },
   {
     "id": "hostage-rescue",
-    "title": "人质营救关卡设计",
+    "title": "《人质营救关卡设计》",
     "subtitle": "立体战术网格与高压时限机制战棋关卡",
     "category": "关卡设计 / 回合制战棋",
     "engine": "Godot 4.7",
@@ -119,7 +119,7 @@ const DEFAULT_PROJECTS = [
       "github": "https://github.com/spaceyjase/TurnBasedStrategyGodot"
     },
     "metaText": "Godot 4.7 · GDScript · 关卡设计与系统原型 · 已完成",
-    "overview": "基于 Godot 4.7 开发的 XCOM 风格战术回合制战棋关卡，围绕“隐蔽潜入 -> 强攻歼灭挟持看守 -> 双层高地固守抗击三波援兵 -> 屋顶直升机撤离”展开的关卡设计。",
+    "overview": "基于 Godot 4.7 开发的 XCOM 风格战术回合制战棋关卡。构建了 40×40 战场与 12×10 双层可破坏建筑，围绕“隐蔽潜入 -> 强攻歼灭挟持看守 -> 双层高地固守抗击三波援兵 -> 屋顶直升机撤离”展开高紧张度心流设计。",
     "keyPoints": [
       {
         "title": "紧迫时限博弈（看守处决机制）",
@@ -160,15 +160,8 @@ const DEFAULT_PROJECTS = [
         "duration": "00:00"
       },
       {
-        "id": "pixel-plane-reward",
-        "title": "击破奖励",
-        "desc": "击破 Boss 后画面冻结，三选一：换新武器，或升级当前武器（最高 Lv3）。也可以花 30000 分购买僚机（第一关总分数不够，需要后面关卡购买，给玩家留下持续游玩的悬念）。每局的武器组合不同，打法随之改变。",
-        "src": "assets/screenshots/pixel-plane/05_reward_and_wingman.png",
-        "duration": "00:00"
-      },
-      {
         "id": "pixel-plane-flamethrower",
-        "title": "喷火器武器设计",
+        "title": "03. 喷火器武器设计",
         "desc": "近距离锥形火焰，穿透敌人并持续伤害。射程短，换来穿透和持续输出，靠近敌人既是风险也是收益。",
         "src": "assets/screenshots/pixel-plane/03_flamethrower_action.png",
         "duration": "00:00"
@@ -182,9 +175,16 @@ const DEFAULT_PROJECTS = [
       },
       {
         "id": "pixel-plane-fortress",
-        "title": "钢铁要塞敌人设计",
+        "title": "04. 钢铁要塞敌人设计",
         "desc": "第一关 Boss。四个可破坏炮塔加一个核心，其中两个前置炮塔可以被直接摧毁，后面两个炮塔只有在玩家获得护盾后靠近射击才能摧毁，保证了boss的难度递进。",
         "src": "assets/screenshots/pixel-plane/04_boss_fortress.png",
+        "duration": "00:00"
+      },
+      {
+        "id": "pixel-plane-reward",
+        "title": "05. 击破奖励",
+        "desc": "击破 Boss 后画面冻结，三选一：换新武器，或升级当前武器（最高 Lv3）。也可以花 30000 分购买僚机（第一关总分数不够，需要后面关卡购买，给玩家留下持续游玩的悬念）。每局的武器组合不同，打法随之改变。",
+        "src": "assets/screenshots/pixel-plane/05_reward_and_wingman.png",
         "duration": "00:00"
       },
       {
@@ -196,10 +196,9 @@ const DEFAULT_PROJECTS = [
       },
       {
         "id": "pixel-plane-gameover",
-        "title": "游戏结束",
+        "title": "08. 游戏结束",
         "desc": "结算页显示本局得分与最高分，提供「再来一局」和「返回主菜单」。重开会重建整个场景，不残留上一局的状态。",
-        "src": "assets/screenshots/pixel-plane/08_game_over_score.png",
-        "duration": "00:00"
+        "src": "assets/screenshots/pixel-plane/08_game_over_score.png"
       }
     ],
     "links": {},
