@@ -2235,3 +2235,7 @@ a:focus-visible,
     flex: 0 0 100%;
   }
 }
+
+/* 片段卡片：标题 → 视频 → 介绍 */
+.clip-title-area { padding-bottom: 14px; }
+.clip-desc-area { padding-top: 16px; border-top: 1px solid var(--border-subtle); }

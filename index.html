@@ -84,13 +84,11 @@
       <!-- 下方：包含视频播放与片段解析的一体化卡片 -->
       <article class="clip-detail-card" id="clipDetailCard">
         <!-- 卡片上方：当前片段的详细解析说明 (标题与正文) -->
-        <div class="card-body-area">
+        <div class="card-body-area clip-title-area">
           <div class="card-title-row">
             <h3 class="clip-title" id="clipTitle">片段标题加载中...</h3>
             <button class="card-edit-btn admin-only" id="editClipBtn" title="编辑当前片段">编辑</button>
           </div>
-          <div class="card-body-divider"></div>
-          <p class="clip-desc" id="clipDesc">片段介绍加载中...</p>
         </div>
 
         <!-- 视频播放器舞台 (无缝内嵌于卡片内，置于标题正文下方) -->
@@ -200,6 +198,11 @@
               </div>
             </div>
           </div>
+        </div>
+
+        <!-- 视频下方：片段介绍 -->
+        <div class="card-body-area clip-desc-area">
+          <p class="clip-desc" id="clipDesc">片段介绍加载中...</p>
         </div>
       </article>
     </main>
