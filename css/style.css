@@ -2193,3 +2193,9 @@ a:focus-visible,
     display: none;
   }
 }
+
+/* 顶部标题栏高斯模糊（背景保持透明） */
+.app-header {
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}

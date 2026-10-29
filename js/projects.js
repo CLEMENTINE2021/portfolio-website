@@ -72,7 +72,7 @@ const DEFAULT_PROJECTS = [
       "pan": "https://pan.baidu.com/s/1Ib28cr995nGAERLTFYQfsA?pwd=j6tn"
     },
     "metaText": "Godot 4.x · PC / Steam · 2025.01 - 至今 · 在研商业项目",
-    "overview": "所有物体继承刚体。围绕引力、惯性、碰撞、摩擦力等物理属性设计关卡和战斗。下面的视频片段展现了这个游戏的机制、关卡、npc设计。\n试玩链接：https://kineticplanet.itch.io/overspace",
+    "overview": "所有物体继承刚体。围绕引力、惯性、碰撞、摩擦力等物理属性设计关卡和战斗。\n试玩链接：https://kineticplanet.itch.io/overspace\n有多个片段展现这个游戏的机制、关卡、npc设计。",
     "keyPoints": [
       {
         "title": "力学核心闭环",
