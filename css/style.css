@@ -2239,3 +2239,23 @@ a:focus-visible,
 /* 片段卡片：标题 → 视频 → 介绍 */
 .clip-title-area { padding-bottom: 14px; }
 .clip-desc-area { padding-top: 16px; border-top: 1px solid var(--border-subtle); }
+
+/* 横屏：片段介绍在视频右侧，高度跟随视频；竖屏：介绍在视频下方 */
+@media (orientation: landscape) {
+  .clip-detail-card {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+    grid-template-rows: auto auto;
+  }
+  .clip-detail-card .clip-title-area { grid-column: 1 / -1; }
+  .clip-detail-card .video-showcase-wrapper { grid-column: 1; grid-row: 2; }
+  .clip-detail-card .clip-desc-area {
+    grid-column: 2;
+    grid-row: 2;
+    contain: size;
+    overflow-y: auto;
+    padding-top: 14px;
+    border-top: 1px solid var(--border-subtle);
+    border-left: 1px solid var(--border-subtle);
+  }
+}
