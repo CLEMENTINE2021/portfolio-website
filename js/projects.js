@@ -72,7 +72,7 @@ const DEFAULT_PROJECTS = [
       "pan": "https://pan.baidu.com/s/1Ib28cr995nGAERLTFYQfsA?pwd=j6tn"
     },
     "metaText": "Godot 4.x · PC / Steam · 2025.01 - 至今 · 在研商业项目",
-    "overview": "所有物体继承刚体。围绕引力、惯性、碰撞、摩擦力等物理属性设计关卡和战斗。下面的视频片段展现了这个游戏的机制、关卡、npc设计。",
+    "overview": "所有物体继承刚体。围绕引力、惯性、碰撞、摩擦力等物理属性设计关卡和战斗。下面的视频片段展现了这个游戏的机制、关卡、npc设计。\n试玩链接：https://kineticplanet.itch.io/overspace",
     "keyPoints": [
       {
         "title": "力学核心闭环",
@@ -119,7 +119,7 @@ const DEFAULT_PROJECTS = [
       "github": "https://github.com/spaceyjase/TurnBasedStrategyGodot"
     },
     "metaText": "Godot 4.7 · GDScript · 关卡设计与系统原型 · 已完成",
-    "overview": "战术回合制战棋关卡，围绕“隐蔽潜入 -> 强攻歼灭 -> 高地固守 -> 撤离”设计。",
+    "overview": "战术回合制战棋关卡，围绕“隐蔽潜入 -> 强攻歼灭 -> 高地固守 -> 撤离”设计。\n试玩链接：https://kineticplanet.itch.io/rescue-hostage",
     "keyPoints": [
       {
         "title": "紧迫时限博弈（看守处决机制）",
@@ -203,7 +203,7 @@ const DEFAULT_PROJECTS = [
     ],
     "links": {},
     "metaText": "Godot 4.7 · GDScript · 竖屏 · 可玩原型",
-    "overview": "竖屏弹幕射击。围绕“清杂兵 → Boss → 选武器”的循环，设计关卡节奏与武器成长。",
+    "overview": "竖屏弹幕射击。围绕“清杂兵 → Boss → 选武器”的循环，设计关卡节奏与武器成长。\n试玩链接：https://kineticplanet.itch.io/raiden",
     "keyPoints": [
       {
         "title": "单手操作",
