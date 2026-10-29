@@ -8,7 +8,7 @@ const DEFAULT_PROJECTS = [
   {
     "id": "overspace",
     "title": "OVERSPACE",
-    "subtitle": "正在开发的游戏",
+    "subtitle": "实验性独立游戏",
     "category": "独立游戏 / 物理模拟",
     "engine": "Godot 4.x",
     "year": "2025 - 至今",
