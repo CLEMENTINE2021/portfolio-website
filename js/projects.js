@@ -95,7 +95,7 @@ const DEFAULT_PROJECTS = [
   },
   {
     "id": "hostage-rescue",
-    "title": "人质营救关卡设计",
+    "title": "类xcom2营救关卡",
     "subtitle": "立体战术网格与高压时限机制战棋关卡",
     "category": "关卡设计 / 回合制战棋",
     "engine": "Godot 4.7",
@@ -142,7 +142,7 @@ const DEFAULT_PROJECTS = [
   },
   {
     "id": "pixel-plane",
-    "title": "像素飞机大战",
+    "title": "肉鸽版像素雷电",
     "subtitle": "竖屏弹幕射击，Boss 与肉鸽武器",
     "category": "独立游戏 / 竖版射击",
     "engine": "Godot 4.7",
