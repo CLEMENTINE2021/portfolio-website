@@ -14,8 +14,8 @@ const DEFAULT_PROJECTS = [
     "year": "2025 - 至今",
     "status": "在研商业项目",
     "role": "系统策划 / 关卡设计 / 程序实现",
-    "thumbnail": "assets/thumbnails/overspace.jpg",
-    "icon": "assets/thumbnails/overspace.jpg",
+    "thumbnail": "assets/thumbnails/overspace_thumb.jpg",
+    "icon": "assets/thumbnails/overspace_thumb.jpg",
     "videos": [
       {
         "id": "overspace-v3",
@@ -95,15 +95,15 @@ const DEFAULT_PROJECTS = [
   },
   {
     "id": "hostage-rescue",
-    "title": "《人质营救关卡设计》",
+    "title": "人质营救关卡设计",
     "subtitle": "立体战术网格与高压时限机制战棋关卡",
     "category": "关卡设计 / 回合制战棋",
     "engine": "Godot 4.7",
     "year": "2024",
     "status": "可玩原型 Demo",
     "role": "关卡设计 / 战术系统策划 / GDScript 实现",
-    "thumbnail": "assets/thumbnails/hostage_rescue.jpg",
-    "icon": "assets/thumbnails/hostage_rescue.jpg",
+    "thumbnail": "assets/thumbnails/hostage-rescue_thumb.jpg",
+    "icon": "assets/thumbnails/hostage-rescue_thumb.jpg",
     "videos": [
       {
         "id": "hostage-v1",
@@ -119,7 +119,7 @@ const DEFAULT_PROJECTS = [
       "github": "https://github.com/spaceyjase/TurnBasedStrategyGodot"
     },
     "metaText": "Godot 4.7 · GDScript · 关卡设计与系统原型 · 已完成",
-    "overview": "基于 Godot 4.7 开发的 XCOM 风格战术回合制战棋关卡。构建了 40×40 战场与 12×10 双层可破坏建筑，围绕“隐蔽潜入 -> 强攻歼灭挟持看守 -> 双层高地固守抗击三波援兵 -> 屋顶直升机撤离”展开高紧张度心流设计。",
+    "overview": "基于 Godot 4.7 开发的 XCOM 风格战术回合制战棋关卡，围绕“隐蔽潜入 -> 强攻歼灭挟持看守 -> 双层高地固守抗击三波援兵 -> 屋顶直升机撤离”展开的关卡设计。",
     "keyPoints": [
       {
         "title": "紧迫时限博弈（看守处决机制）",
@@ -149,8 +149,8 @@ const DEFAULT_PROJECTS = [
     "year": "2026",
     "status": "可玩原型",
     "role": "系统策划 / 关卡设计 / GDScript 实现",
-    "thumbnail": "assets/thumbnails/pixel_plane.jpg",
-    "icon": "assets/thumbnails/pixel_plane.jpg",
+    "thumbnail": "assets/thumbnails/pixel-plane_thumb.jpg",
+    "icon": "assets/thumbnails/pixel-plane_thumb.jpg",
     "videos": [
       {
         "id": "pixel-plane-grassland",
@@ -160,8 +160,15 @@ const DEFAULT_PROJECTS = [
         "duration": "00:00"
       },
       {
+        "id": "pixel-plane-reward",
+        "title": "击破奖励",
+        "desc": "击破 Boss 后画面冻结，三选一：换新武器，或升级当前武器（最高 Lv3）。也可以花 30000 分购买僚机（第一关总分数不够，需要后面关卡购买，给玩家留下持续游玩的悬念）。每局的武器组合不同，打法随之改变。",
+        "src": "assets/screenshots/pixel-plane/05_reward_and_wingman.png",
+        "duration": "00:00"
+      },
+      {
         "id": "pixel-plane-flamethrower",
-        "title": "03. 喷火器武器设计",
+        "title": "喷火器武器设计",
         "desc": "近距离锥形火焰，穿透敌人并持续伤害。射程短，换来穿透和持续输出，靠近敌人既是风险也是收益。",
         "src": "assets/screenshots/pixel-plane/03_flamethrower_action.png",
         "duration": "00:00"
@@ -175,16 +182,9 @@ const DEFAULT_PROJECTS = [
       },
       {
         "id": "pixel-plane-fortress",
-        "title": "04. 钢铁要塞敌人设计",
+        "title": "钢铁要塞敌人设计",
         "desc": "第一关 Boss。四个可破坏炮塔加一个核心，其中两个前置炮塔可以被直接摧毁，后面两个炮塔只有在玩家获得护盾后靠近射击才能摧毁，保证了boss的难度递进。",
         "src": "assets/screenshots/pixel-plane/04_boss_fortress.png",
-        "duration": "00:00"
-      },
-      {
-        "id": "pixel-plane-reward",
-        "title": "05. 击破奖励",
-        "desc": "击破 Boss 后画面冻结，三选一：换新武器，或升级当前武器（最高 Lv3）。也可以花 30000 分购买僚机（第一关总分数不够，需要后面关卡购买，给玩家留下持续游玩的悬念）。每局的武器组合不同，打法随之改变。",
-        "src": "assets/screenshots/pixel-plane/05_reward_and_wingman.png",
         "duration": "00:00"
       },
       {
@@ -196,9 +196,10 @@ const DEFAULT_PROJECTS = [
       },
       {
         "id": "pixel-plane-gameover",
-        "title": "08. 游戏结束",
+        "title": "游戏结束",
         "desc": "结算页显示本局得分与最高分，提供「再来一局」和「返回主菜单」。重开会重建整个场景，不残留上一局的状态。",
-        "src": "assets/screenshots/pixel-plane/08_game_over_score.png"
+        "src": "assets/screenshots/pixel-plane/08_game_over_score.png",
+        "duration": "00:00"
       }
     ],
     "links": {},
