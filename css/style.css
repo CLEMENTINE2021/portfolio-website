@@ -2199,3 +2199,27 @@ a:focus-visible,
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
 }
+
+/* 手机宽度：第一行标题 + 联系方式，第二行作品选择条 */
+@media (max-width: 880px) {
+  .app-header {
+    height: auto;
+    flex-wrap: wrap;
+    align-items: center;
+    row-gap: 4px;
+    padding: 8px 1rem 4px;
+  }
+  .header-left {
+    order: 1;
+    flex: 1;
+  }
+  .header-contact {
+    display: flex;
+    order: 2;
+    font-size: 0.68rem;
+  }
+  .app-header .top-project-strip-section {
+    order: 3;
+    flex: 0 0 100%;
+  }
+}
