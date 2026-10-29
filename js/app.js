@@ -1094,7 +1094,7 @@
     if (isImageSrc(clip.src) && els.showcaseImage) {
       if (els.showcaseIframe) {
         els.showcaseIframe.style.display = 'none';
-        els.showcaseIframe.src = '';
+        els.showcaseIframe.src = 'about:blank';
       }
       video.pause();
       video.style.display = 'none';
@@ -1112,7 +1112,7 @@
     // 切换回原生 HTML5 Video 播放模式
     if (els.showcaseIframe) {
       els.showcaseIframe.style.display = 'none';
-      els.showcaseIframe.src = '';
+      els.showcaseIframe.src = 'about:blank';
     }
     if (video) {
       video.style.display = 'block';

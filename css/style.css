@@ -349,9 +349,9 @@ body.theme-pixel-plane .space-aurora {
 }
 
 .top-project-card.active {
-  background: rgba(255, 255, 255, 0.14);
-  border-color: rgba(255, 255, 255, 0.85);
-  color: #ffffff;
+  background: rgba(255, 255, 255, 0.65);
+  border-color: rgba(255, 255, 255, 0.65);
+  color: #0b0d14;
   box-shadow: 0 0 14px rgba(255, 255, 255, 0.15);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
@@ -367,8 +367,7 @@ body.theme-pixel-plane .space-aurora {
   width: 16px;
   height: 2px;
   border-radius: 2px;
-  background: #ffffff;
-  box-shadow: 0 0 6px rgba(255, 255, 255, 0.8);
+  background: #0b0d14;
 }
 
 .project-icon-wrapper {
@@ -417,7 +416,7 @@ body.theme-pixel-plane .space-aurora {
 }
 
 .top-project-card.active .top-project-title-text {
-  color: #ffffff;
+  color: #0b0d14;
   font-weight: 600;
 }
 
@@ -1269,14 +1268,27 @@ body.is-admin-mode .project-poster-side:hover .poster-edit-overlay.admin-only {
   border-bottom: none;
 }
 .subvideo-item-card:hover {
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.12);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.35);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
 }
 .subvideo-item-card.active {
-  background: rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.65);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.65);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
+}
+.subvideo-item-card.active::after {
+  content: '';
+  position: absolute;
+  bottom: 2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 16px;
+  height: 2px;
+  border-radius: 2px;
+  background: #0b0d14;
 }
 
 /* 片段拖拽排序手柄 (三条杠) - 仅在管理员模式下可见 */
@@ -1382,7 +1394,7 @@ body.is-admin-mode .clip-drag-handle.admin-only {
   color: #ffffff;
 }
 .subvideo-item-card.active .wifi-row-title {
-  color: #ffffff;
+  color: #0b0d14;
   font-weight: 700;
 }
 .wifi-row-status {
