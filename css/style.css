@@ -83,20 +83,74 @@ body {
 }
 
 /* ==========================================================================
-   《OVERSPACE》专属深空星空背景 Canvas
+   《OVERSPACE》专属柔和渐变色背景（暗色底，色彩缓慢漂移）
    ========================================================================== */
-.space-starfield {
+@property --aurora-1 { syntax: '<color>'; inherits: true; initial-value: transparent; }
+@property --aurora-2 { syntax: '<color>'; inherits: true; initial-value: transparent; }
+@property --aurora-3 { syntax: '<color>'; inherits: true; initial-value: transparent; }
+@property --aurora-4 { syntax: '<color>'; inherits: true; initial-value: transparent; }
+.space-aurora {
   position: fixed;
   inset: 0;
-  width: 100vw;
-  height: 100vh;
   z-index: 0;
   pointer-events: none;
+  overflow: hidden;
   opacity: 0;
-  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  --aurora-1: rgba(79, 70, 160, 0.30);
+  --aurora-2: rgba(20, 110, 130, 0.24);
+  --aurora-3: rgba(130, 60, 120, 0.20);
+  --aurora-4: rgba(40, 80, 150, 0.22);
+  transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1),
+    --aurora-1 1.2s ease, --aurora-2 1.2s ease, --aurora-3 1.2s ease, --aurora-4 1.2s ease;
 }
-.space-starfield.active {
+body.theme-overspace .space-aurora,
+body.theme-hostage-rescue .space-aurora,
+body.theme-pixel-plane .space-aurora {
   opacity: 1;
+}
+body.theme-hostage-rescue .space-aurora {
+  --aurora-1: rgba(200, 95, 25, 0.26);
+  --aurora-2: rgba(170, 55, 30, 0.20);
+  --aurora-3: rgba(210, 130, 30, 0.18);
+  --aurora-4: rgba(150, 60, 40, 0.20);
+}
+body.theme-pixel-plane .space-aurora {
+  --aurora-1: rgba(40, 150, 70, 0.26);
+  --aurora-2: rgba(25, 120, 90, 0.20);
+  --aurora-3: rgba(110, 160, 40, 0.16);
+  --aurora-4: rgba(30, 110, 60, 0.20);
+}
+.space-aurora::before,
+.space-aurora::after {
+  content: '';
+  position: absolute;
+  inset: -25%;
+  will-change: transform, filter;
+}
+.space-aurora::before {
+  background:
+    radial-gradient(ellipse 45% 40% at 22% 28%, var(--aurora-1), transparent 70%),
+    radial-gradient(ellipse 40% 45% at 78% 72%, var(--aurora-2), transparent 70%);
+  animation: aurora-drift-a 38s ease-in-out infinite alternate, aurora-hue 70s linear infinite;
+}
+.space-aurora::after {
+  background:
+    radial-gradient(ellipse 40% 38% at 72% 24%, var(--aurora-3), transparent 70%),
+    radial-gradient(ellipse 45% 40% at 26% 80%, var(--aurora-4), transparent 70%);
+  animation: aurora-drift-b 52s ease-in-out infinite alternate, aurora-hue 90s linear infinite reverse;
+}
+@keyframes aurora-drift-a {
+  from { transform: translate3d(-4%, -3%, 0) rotate(0deg) scale(1); }
+  to   { transform: translate3d(5%, 4%, 0) rotate(8deg) scale(1.12); }
+}
+@keyframes aurora-drift-b {
+  from { transform: translate3d(5%, 3%, 0) rotate(0deg) scale(1.08); }
+  to   { transform: translate3d(-5%, -4%, 0) rotate(-10deg) scale(1); }
+}
+@keyframes aurora-hue {
+  from { filter: hue-rotate(-25deg); }
+  50%  { filter: hue-rotate(25deg); }
+  to   { filter: hue-rotate(-25deg); }
 }
 
 .app-layout {
@@ -1995,3 +2049,121 @@ body.is-admin-mode .admin-status-indicator.admin-only {
   cursor: pointer;
 }
 .sync-fail-box button:hover { background: rgba(255, 255, 255, 0.2); }
+
+/* ==========================================================================
+   细节优化：可读性 / 可点击性 / 键盘焦点 / 移动端遮挡
+   ========================================================================== */
+
+/* 编辑按钮：加大点击区域并提高对比度 */
+.card-edit-btn {
+  padding: 5px 13px;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  border-color: var(--border-card);
+}
+
+/* 片段解析限制行宽，避免超宽屏下一行过长 (作品简介在固定高度卡片内，不限制) */
+.clip-desc {
+  max-width: 80em;
+}
+
+/* 顶部作品条的标题略微放大 */
+.top-project-title-text {
+  font-size: 0.82rem;
+}
+
+/* 键盘焦点可见 */
+button:focus-visible,
+label:focus-within,
+a:focus-visible,
+.subvideo-item-card:focus-visible,
+.top-project-card:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 2px;
+}
+
+/* 移动端：右下角编辑模式标签不再压住正文 */
+@media (max-width: 880px) {
+  .bottom-workspace-layout {
+    padding-bottom: 4rem;
+  }
+  .admin-status-indicator {
+    bottom: 8px;
+    right: 8px;
+    padding: 3px 9px;
+    font-size: 0.66rem;
+    opacity: 0.85;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ==========================================================================
+   作品选择条并入顶部 Header 同一行
+   ========================================================================== */
+:root {
+  --top-strip-height: 0px;
+}
+.app-header {
+  justify-content: flex-start;
+  gap: 1.75rem;
+}
+.header-left {
+  flex-shrink: 0;
+}
+.app-header .top-project-strip-section {
+  position: static;
+  flex: 1;
+  min-width: 0;
+  padding: 0;
+  background: none;
+  border: 0;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+.app-header .top-project-scroll {
+  padding: 4px 2px;
+}
+.app-header .top-project-card {
+  flex-direction: row;
+  gap: 8px;
+  padding: 4px 12px 4px 5px;
+  min-width: 0;
+}
+.app-header .top-project-card.active::after {
+  bottom: 1px;
+}
+.app-header .project-icon-wrapper {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+}
+.app-header .top-project-add-card {
+  padding-left: 5px;
+}
+
+@media (max-width: 880px) {
+  .app-header {
+    gap: 0.75rem;
+  }
+  .simple-brand-title {
+    font-size: 0.95rem;
+    white-space: nowrap;
+  }
+  .app-header .top-project-strip-section {
+    padding: 0;
+  }
+}
+
+/* 顶部标题栏背景透明 */
+.app-header {
+  background: transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}

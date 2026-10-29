@@ -9,8 +9,8 @@
   <link rel="stylesheet" href="css/style.css?v=20261028_15">
 </head>
 <body class="theme-dark">
-  <!-- 《OVERSPACE》专属深空星空背景 Canvas -->
-  <canvas id="spaceCanvas" class="space-starfield" aria-hidden="true"></canvas>
+  <!-- 《OVERSPACE》专属柔和渐变色背景 -->
+  <div class="space-aurora" aria-hidden="true"></div>
 
   <div class="app-layout">
     <!-- 顶部全局导航栏 -->
@@ -18,17 +18,16 @@
       <div class="header-left">
         <h1 class="simple-brand-title">葛文轩作品集</h1>
       </div>
-    </header>
 
-    <!-- 上面一排横着的：选择作品 (Top Horizontal Project Bar，已关闭左侧椭圆分类) -->
-    <section class="top-project-strip-section" aria-label="作品选择栏">
-      <div class="strip-inner">
-        <!-- 横排作品卡片选择容器 -->
-        <div class="top-project-scroll" id="topProjectListContainer" role="tablist" aria-orientation="horizontal">
-          <!-- 动态生成的横排作品卡片 -->
+      <!-- 同一行：选择作品 (Top Horizontal Project Bar) -->
+      <section class="top-project-strip-section" aria-label="作品选择栏">
+        <div class="strip-inner">
+          <div class="top-project-scroll" id="topProjectListContainer" role="tablist" aria-orientation="horizontal">
+            <!-- 动态生成的横排作品卡片 -->
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </header>
 
     <!-- 下面主展示区：上方为项目介绍与视频片段合体卡片，下方为嵌入式视频与片段解析卡片 -->
     <main class="bottom-workspace-layout">
@@ -339,7 +338,6 @@
 
   <!-- Scripts -->
   <script src="js/projects.js?v=20261028_15"></script>
-  <script src="js/space-theme.js?v=20261028_15"></script>
   <script src="js/app.js?v=20261028_15"></script>
 </body>
 </html>

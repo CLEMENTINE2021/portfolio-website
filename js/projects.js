@@ -8,7 +8,7 @@ const DEFAULT_PROJECTS = [
   {
     "id": "overspace",
     "title": "OVERSPACE",
-    "subtitle": "围绕物理的战斗与解谜",
+    "subtitle": "正在开发的游戏",
     "category": "独立游戏 / 物理模拟",
     "engine": "Godot 4.x",
     "year": "2025 - 至今",
@@ -95,7 +95,7 @@ const DEFAULT_PROJECTS = [
   },
   {
     "id": "hostage-rescue",
-    "title": "《人质营救关卡设计》",
+    "title": "人质营救关卡设计",
     "subtitle": "立体战术网格与高压时限机制战棋关卡",
     "category": "关卡设计 / 回合制战棋",
     "engine": "Godot 4.7",
@@ -119,7 +119,7 @@ const DEFAULT_PROJECTS = [
       "github": "https://github.com/spaceyjase/TurnBasedStrategyGodot"
     },
     "metaText": "Godot 4.7 · GDScript · 关卡设计与系统原型 · 已完成",
-    "overview": "基于 Godot 4.7 开发的 XCOM 风格战术回合制战棋关卡。构建了 40×40 战场与 12×10 双层可破坏建筑，围绕“隐蔽潜入 -> 强攻歼灭挟持看守 -> 双层高地固守抗击三波援兵 -> 屋顶直升机撤离”展开高紧张度心流设计。",
+    "overview": "战术回合制战棋关卡，围绕“隐蔽潜入 -> 强攻歼灭 -> 高地固守 -> 撤离”设计。",
     "keyPoints": [
       {
         "title": "紧迫时限博弈（看守处决机制）",

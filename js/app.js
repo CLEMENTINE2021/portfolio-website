@@ -296,9 +296,12 @@
     try {
       stored = localStorage.getItem(BASE_REV_KEY);
     } catch (e) {}
-    // 从浏览器缓存恢复的数据是基于缓存当时的版本编辑的，必须沿用当时的版本号
+    // 从浏览器缓存恢复的数据是基于缓存当时的版本编辑的，必须沿用当时的版本号；
+    // 没有记录版本号的旧缓存无法判断是否过期，若按当前文件版本放行，会把旧快照写回去覆盖较新的内容，所以直接当作过期处理
     if (restoredFromCache && stored) {
       baseRev = stored;
+    } else if (restoredFromCache) {
+      showConflict();
     } else {
       baseRevPromise = fetchBaseRev();
     }
@@ -1020,11 +1023,9 @@
   }
 
   function updateProjectTheme(projectId) {
-    const isOverspace = projectId === 'overspace';
-    document.body.classList.toggle('theme-overspace', isOverspace);
-    if (window.spaceStarfield) {
-      window.spaceStarfield.setActive(isOverspace);
-    }
+    ['overspace', 'hostage-rescue', 'pixel-plane'].forEach(id => {
+      document.body.classList.toggle(`theme-${id}`, projectId === id);
+    });
   }
 
   function selectSubvideo(videoIndex) {
