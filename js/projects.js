@@ -33,7 +33,7 @@ const DEFAULT_PROJECTS = [
       },
       {
         "id": "overspace-v4",
-        "title": "精英冲撞敌人设计",
+        "title": "精英怪关卡设计",
         "desc": "视频中的大型冲撞敌人有可破坏的外壳和核心。玩家需要破坏它的外壳并摧毁核心才能将其解决。最直接的办法是抓住其他charger，利用charger的爆炸破坏它的外壳并摧毁核心。如果玩家有远程射击武器也可以对其进行射击破坏。该精英怪旨在让玩家更加熟悉该游戏的可破坏机制和爆炸机制，为后续关卡提供必要知识。",
         "src": "assets/videos/overspace-elite.mp4",
         "duration": "00:29"
@@ -160,8 +160,15 @@ const DEFAULT_PROJECTS = [
         "duration": "00:00"
       },
       {
+        "id": "pixel-plane-reward",
+        "title": "击破奖励",
+        "desc": "击破 Boss 后画面冻结，三选一：换新武器，或升级当前武器（最高 Lv3）。也可以花 30000 分购买僚机（第一关总分数不够，需要后面关卡购买，给玩家留下持续游玩的悬念）。每局的武器组合不同，打法随之改变。",
+        "src": "assets/screenshots/pixel-plane/05_reward_and_wingman.png",
+        "duration": "00:00"
+      },
+      {
         "id": "pixel-plane-flamethrower",
-        "title": "03. 喷火器武器设计",
+        "title": "喷火器武器设计",
         "desc": "近距离锥形火焰，穿透敌人并持续伤害。射程短，换来穿透和持续输出，靠近敌人既是风险也是收益。",
         "src": "assets/screenshots/pixel-plane/03_flamethrower_action.png",
         "duration": "00:00"
@@ -175,16 +182,9 @@ const DEFAULT_PROJECTS = [
       },
       {
         "id": "pixel-plane-fortress",
-        "title": "04. 钢铁要塞敌人设计",
+        "title": "钢铁要塞敌人设计",
         "desc": "第一关 Boss。四个可破坏炮塔加一个核心，其中两个前置炮塔可以被直接摧毁，后面两个炮塔只有在玩家获得护盾后靠近射击才能摧毁，保证了boss的难度递进。",
         "src": "assets/screenshots/pixel-plane/04_boss_fortress.png",
-        "duration": "00:00"
-      },
-      {
-        "id": "pixel-plane-reward",
-        "title": "05. 击破奖励",
-        "desc": "击破 Boss 后画面冻结，三选一：换新武器，或升级当前武器（最高 Lv3）。也可以花 30000 分购买僚机（第一关总分数不够，需要后面关卡购买，给玩家留下持续游玩的悬念）。每局的武器组合不同，打法随之改变。",
-        "src": "assets/screenshots/pixel-plane/05_reward_and_wingman.png",
         "duration": "00:00"
       },
       {
@@ -196,9 +196,10 @@ const DEFAULT_PROJECTS = [
       },
       {
         "id": "pixel-plane-gameover",
-        "title": "08. 游戏结束",
+        "title": "游戏结束",
         "desc": "结算页显示本局得分与最高分，提供「再来一局」和「返回主菜单」。重开会重建整个场景，不残留上一局的状态。",
-        "src": "assets/screenshots/pixel-plane/08_game_over_score.png"
+        "src": "assets/screenshots/pixel-plane/08_game_over_score.png",
+        "duration": "00:00"
       }
     ],
     "links": {},
